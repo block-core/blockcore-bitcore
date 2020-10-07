@@ -118,7 +118,12 @@ function copyFolderSync(from, to) {
    }
 
    var exports = chainsAll.map(item => { return 'BitcoreLib' + item.name.charAt(0).toUpperCase() + item.name.slice(1) + ',' });
-   var imports = chainsAll.map(item => { return `import * as BitcoreLib` + item.name.charAt(0).toUpperCase() + item.name.slice(1) + ` from 'bitcore-lib-` + item.name + `';
+   
+   // var imports = chainsAll.map(item => { return `import * as BitcoreLib` + item.name.charAt(0).toUpperCase() + item.name.slice(1) + ` from 'bitcore-lib-` + item.name + `';
+   // `});
+
+   // TODO: Replace the library name with chain libraries when all of them is generated.
+   var imports = chainsAll.map(item => { return `import * as BitcoreLib` + item.name.charAt(0).toUpperCase() + item.name.slice(1) + ` from 'bitcore-lib-city';
    `});
 
    await replaceInFile('crypto-wallet-core/src/index.ts', [{
@@ -349,6 +354,12 @@ function copyFolderSync(from, to) {
       }, {
          key: "BitcoinModule",
          value: chainNameCased + "Module"
+      }, {
+         key: './p2p',
+         value: '../bitcoin/p2p'
+      }, {
+         key: './VerificationPeer',
+         value: '../bitcoin/VerificationPeer'
       }]);
 
       let chainDerivation = `const BitcoreLib = require('bitcore-lib-` + chainName + `');
@@ -489,17 +500,6 @@ function copyFolderSync(from, to) {
 
    copyFolderSync('bitcore-wallet-service/src/lib/chain/btc', 'bitcore-wallet-service/src/lib/chain/blockcore');
 
-   await replaceInFile('crypto-wallet-core/package.json', [{
-      key: '"bitcore-lib-city": "^8.22.2",',
-      value: `"bitcore-lib-city": "git+https://github.com/block-core/blockcore-bitcore/packages/bitcore-lib-city",`
-   }, {
-      key: '"bitcore-lib": "^8.22.2",',
-      value: `"bitcore-lib": "git+https://github.com/block-core/blockcore-bitcore/packages/bitcore-lib",`
-   }, {
-      key: '"bitcore-lib-cash": "^8.22.2",',
-      value: `"bitcore-lib-cash": "git+https://github.com/block-core/blockcore-bitcore/packages/bitcore-lib-cash",`
-   }]);
-
    // 1. Copy the "bitcore-lib" and create chain specific copies of the library.
    // 2. Run replacement that is generic, and custom if needed.
 
@@ -559,11 +559,16 @@ function copyFolderSync(from, to) {
       await writeFile('bitcore-wallet-service/src/lib/chain/' + chainName + '/index.ts', chainDefinition);
    }
 
+   await replaceInFile('crypto-wallet-core/package.json', [{
+      key: '"bitcore-lib": "^8.22.2",',
+      value: `"bitcore-lib": "^8.22.2",
+      "bitcore-lib-city": "^8.22.2",`
+   }]);
+
    var chains = [{ name: 'city' }];
 
    for (var i = 0; i < chains.length; i++) {
       let chain = chains[i];
-
       let libName = 'bitcore-lib-' + chain.name;
 
       copyFolderSync('bitcore-lib', libName);

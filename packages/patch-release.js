@@ -65,7 +65,7 @@ function copyFolderSync(from, to) {
    var chainsAll = [{ name: 'city' }, { name: 'exos' }, { name: 'ruta' }, { name: 'strat' }, { name: 'x42' }, { name: 'xds' }, { name: 'xlr' }];
 
    await replaceInFile('crypto-wallet-core/package.json', [{
-      key: '""bitcore-lib": "^8.22.2",',
+      key: '"bitcore-lib": "^8.22.2",',
       value: `"bitcore-lib": "git+https://github.com/block-core/blockcore-bitcore/packages/bitcore-lib",
       "bitcore-lib-city": "git+https://github.com/block-core/blockcore-bitcore/packages/bitcore-lib-city",`
    }, {
