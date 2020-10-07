@@ -1,3 +1,16 @@
+/*
+
+   Blockcore Patch Script
+
+   Use this script to patch the mono-repo and add support for Blockcore.
+   This initial script will update code and add support for additional chains based on Blockchain, and when
+   it has been run, finish by running "npm install".
+
+   The secondary script "patch-release.js", will replace the "crypto-wallet-core" package.json file. This should be
+   done before releasing that script.
+
+*/
+
 var fs = require('fs').promises;
 var fs2 = require('fs');
 var path = require('path');
@@ -63,8 +76,6 @@ function copyFolderSync(from, to) {
 (async () => {
 
    var chainsAll = [{ name: 'city' }, { name: 'exos' }, { name: 'ruta' }, { name: 'strat' }, { name: 'x42' }, { name: 'xds' }, { name: 'xlr' }];
-
-
    var units = '';
    var defaults = '';
 
@@ -84,7 +95,7 @@ function copyFolderSync(from, to) {
          }
        },`;
 
-       let def = `  ` + chainName + `: [
+      let def = `  ` + chainName + `: [
          {
            name: 'priority',
            nbBlocks: 2,
@@ -102,9 +113,22 @@ function copyFolderSync(from, to) {
          }
        ],`;
 
-       units += unit;
-       defaults += def;
+      units += unit;
+      defaults += def;
    }
+
+   var exports = chainsAll.map(item => { return 'BitcoreLib' + item.name.charAt(0).toUpperCase() + item.name.slice(1) + ',' });
+   var imports = chainsAll.map(item => { return `import * as BitcoreLib` + item.name.charAt(0).toUpperCase() + item.name.slice(1) + ` from 'bitcore-lib-` + item.name + `';
+   `});
+
+   await replaceInFile('crypto-wallet-core/src/index.ts', [{
+      key: "import * as BitcoreLibCash from 'bitcore-lib-cash';",
+      value: `import * as BitcoreLibCash from 'bitcore-lib-cash';
+      ` + imports.join(' ')
+   }, {
+      key: "BitcoreLibCash, ",
+      value: `BitcoreLibCash, ` + exports.join(' ')
+   }]);
 
    await replaceInFile('crypto-wallet-core/src/constants/units.ts', [{ key: 'btc: {', value: units + 'btc: {' }]);
    await replaceInFile('bitcore-wallet-service/src/lib/common/defaults.ts', [{ key: 'btc: [', value: defaults + 'btc: [' }, {
@@ -138,7 +162,7 @@ function copyFolderSync(from, to) {
       x42: 0,
       xds: 0.01`
    }]);
-   
+
 
    await copyFile('bitcore-p2p-cash/lib/messages/commands/sendheaders.js', 'bitcore-p2p/lib/messages/commands/sendheaders.js');
 
@@ -328,7 +352,7 @@ function copyFolderSync(from, to) {
       }]);
 
       let chainDerivation = `const BitcoreLib = require('bitcore-lib-` + chainName + `');
-      import { AbstractBitcoreLibDeriver } from '../` + chainName + `';
+      import { AbstractBitcoreLibDeriver } from '../btc';
       export class ` + chainNameCased + `Deriver extends AbstractBitcoreLibDeriver {
         bitcoreLib = BitcoreLib;
       }
@@ -348,7 +372,7 @@ function copyFolderSync(from, to) {
       await createFolder('crypto-wallet-core/src/transactions/' + chainName);
       await writeFile('crypto-wallet-core/src/transactions/' + chainName + '/index.ts', chainTransaction);
 
-      
+
       await createFolder('crypto-wallet-core/src/validation/' + chainName);
       await copyFile('crypto-wallet-core/src/validation/btc/index.ts', 'crypto-wallet-core/src/validation/' + chainName + '/index.ts');
       await replaceInFile('crypto-wallet-core/src/validation/' + chainName + '/index.ts', [{
@@ -378,7 +402,7 @@ function copyFolderSync(from, to) {
 
    await replaceInFile('bitcore-wallet-service/src/lib/common/utils.ts', [{
       key: "bch: require('bitcore-lib-cash')",
-      value: `bch: require('bitcore-lib-cash')
+      value: `bch: require('bitcore-lib-cash'),
       city: require('bitcore-lib-city'),
       exos: require('bitcore-lib-city'),
       ruta: require('bitcore-lib-city'),
