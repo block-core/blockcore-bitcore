@@ -310,6 +310,7 @@ function copyFolderSync(from, to) {
       let chainNameCased = chainName.charAt(0).toUpperCase() + chainName.slice(1);
       let chainNameUpper = chainName.toUpperCase();
 
+      await createFolder('bitcore-node/src/modules/' + chainName);
       await copyFile('bitcore-node/src/modules/bitcoin/index.ts', 'bitcore-node/src/modules/' + chainName + '/index.ts');
 
       await replaceInFile('bitcore-node/src/modules/' + chainName + '/index.ts', [{
@@ -513,7 +514,7 @@ function copyFolderSync(from, to) {
          value: "new BTCStateProvider('" + chainNameUpper + "')"
       }, {
          key: "'bitcore-lib'",
-         value: "'bitcore-lib-'" + chainName + "'"
+         value: "'bitcore-lib-" + chainName + "'"
       }, {
          key: "BitcoinModule",
          value: chainNameCased + "Module"
