@@ -21,7 +21,14 @@ var Bitcore_ = {
   btc: CWC.BitcoreLib,
   bch: CWC.BitcoreLibCash,
   eth: CWC.BitcoreLib,
-  xrp: CWC.BitcoreLib
+  xrp: CWC.BitcoreLib,
+     city: CWC.BitcoreLib,
+     exos: CWC.BitcoreLib,
+     ruta: CWC.BitcoreLib,
+     xlr: CWC.BitcoreLib,
+     strat: CWC.BitcoreLib,
+     x42: CWC.BitcoreLib,
+     xds: CWC.BitcoreLib,
 };
 var Mnemonic = require('bitcore-mnemonic');
 var url = require('url');
@@ -2578,7 +2585,21 @@ export class API extends EventEmitter {
         ['xrp', 'livenet'],
         ['xrp', 'testnet'],
         ['btc', 'livenet', true],
-        ['bch', 'livenet', true]
+        ['bch', 'livenet', true],
+           ['city', 'livenet'],
+           ['exos', 'livenet'],
+           ['ruta', 'livenet'],
+           ['xlr', 'livenet'],
+           ['strat', 'livenet'],
+           ['x42', 'livenet'],
+           ['xds', 'livenet'],
+           ['city', 'livenet', true],
+           ['exos', 'livenet', true],
+           ['ruta', 'livenet', true],
+           ['xlr', 'livenet', true],
+           ['strat', 'livenet', true],
+           ['x42', 'livenet', true],
+           ['xds', 'livenet', true],
       ];
       if (key.use44forMultisig) {
         //  testing old multi sig

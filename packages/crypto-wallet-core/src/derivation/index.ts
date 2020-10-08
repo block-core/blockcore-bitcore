@@ -1,5 +1,12 @@
 import { BchDeriver } from './bch';
 import { BtcDeriver } from './btc';
+      import { CityDeriver } from './city';
+      import { ExosDeriver } from './exos';
+      import { RutaDeriver } from './ruta';
+      import { XlrDeriver } from './xlr';
+      import { StratDeriver } from './strat';
+      import { X42Deriver } from './x42';
+      import { XdsDeriver } from './xds';
 import { EthDeriver } from './eth';
 import { Paths } from './paths';
 import { XrpDeriver } from './xrp';
@@ -20,7 +27,14 @@ const derivers: { [chain: string]: IDeriver } = {
   BTC: new BtcDeriver(),
   BCH: new BchDeriver(),
   ETH: new EthDeriver(),
-  XRP: new XrpDeriver()
+  XRP: new XrpDeriver(),
+  CITY: new CityDeriver(),
+  EXOS: new ExosDeriver(),
+  RUTA: new RutaDeriver(),
+  XLR: new XlrDeriver(),
+  STRAT: new StratDeriver(),
+  X42: new X42Deriver(),
+  XDS: new XdsDeriver(),
 };
 
 export class DeriverProxy {

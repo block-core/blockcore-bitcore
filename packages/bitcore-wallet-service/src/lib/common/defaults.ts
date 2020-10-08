@@ -20,7 +20,119 @@ module.exports = {
   SCAN_ADDRESS_GAP: 30,
 
   FEE_LEVELS: {
-    btc: [
+      city: [
+         {
+           name: 'priority',
+           nbBlocks: 2,
+           defaultValue: 50000
+         },
+         {
+           name: 'normal',
+           nbBlocks: 3,
+           defaultValue: 30000
+         },
+         {
+           name: 'economy',
+           nbBlocks: 6,
+           defaultValue: 25000
+         }
+       ],  exos: [
+         {
+           name: 'priority',
+           nbBlocks: 2,
+           defaultValue: 50000
+         },
+         {
+           name: 'normal',
+           nbBlocks: 3,
+           defaultValue: 30000
+         },
+         {
+           name: 'economy',
+           nbBlocks: 6,
+           defaultValue: 25000
+         }
+       ],  ruta: [
+         {
+           name: 'priority',
+           nbBlocks: 2,
+           defaultValue: 50000
+         },
+         {
+           name: 'normal',
+           nbBlocks: 3,
+           defaultValue: 30000
+         },
+         {
+           name: 'economy',
+           nbBlocks: 6,
+           defaultValue: 25000
+         }
+       ],  strat: [
+         {
+           name: 'priority',
+           nbBlocks: 2,
+           defaultValue: 50000
+         },
+         {
+           name: 'normal',
+           nbBlocks: 3,
+           defaultValue: 30000
+         },
+         {
+           name: 'economy',
+           nbBlocks: 6,
+           defaultValue: 25000
+         }
+       ],  x42: [
+         {
+           name: 'priority',
+           nbBlocks: 2,
+           defaultValue: 50000
+         },
+         {
+           name: 'normal',
+           nbBlocks: 3,
+           defaultValue: 30000
+         },
+         {
+           name: 'economy',
+           nbBlocks: 6,
+           defaultValue: 25000
+         }
+       ],  xds: [
+         {
+           name: 'priority',
+           nbBlocks: 2,
+           defaultValue: 50000
+         },
+         {
+           name: 'normal',
+           nbBlocks: 3,
+           defaultValue: 30000
+         },
+         {
+           name: 'economy',
+           nbBlocks: 6,
+           defaultValue: 25000
+         }
+       ],  xlr: [
+         {
+           name: 'priority',
+           nbBlocks: 2,
+           defaultValue: 50000
+         },
+         {
+           name: 'normal',
+           nbBlocks: 3,
+           defaultValue: 30000
+         },
+         {
+           name: 'economy',
+           nbBlocks: 6,
+           defaultValue: 25000
+         }
+       ],btc: [
       {
         name: 'urgent',
         nbBlocks: 2,
@@ -215,7 +327,14 @@ module.exports = {
     btc: 0.05 * 1e8,
     bch: 0.05 * 1e8,
     eth: 1 * 1e18, // 1 eth
-    xrp: 1 * 1e6 // 1 xrp
+    xrp: 1 * 1e6, // 1 xrp
+      city: 0.01,
+      exos: 0.01,
+      ruta: 0.01,
+      xlr: 0.01,
+      strat: 0.05,
+      x42: 0,
+      xds: 0.01
   },
 
   // ETH

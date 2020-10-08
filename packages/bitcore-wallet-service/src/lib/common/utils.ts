@@ -8,7 +8,14 @@ const secp256k1 = require('secp256k1');
 const Bitcore = require('bitcore-lib');
 const Bitcore_ = {
   btc: Bitcore,
-  bch: require('bitcore-lib-cash')
+  bch: require('bitcore-lib-cash'),
+      city: require('bitcore-lib-city'),
+      exos: require('bitcore-lib-exos'),
+      ruta: require('bitcore-lib-ruta'),
+      xlr: require('bitcore-lib-xlr'),
+      strat: require('bitcore-lib-strat'),
+      x42: require('bitcore-lib-x42'),
+      xds: require('bitcore-lib-xds')
 };
 
 export class Utils {

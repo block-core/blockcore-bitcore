@@ -41,7 +41,14 @@ const Bitcore_ = {
   btc: Bitcore,
   bch: require('bitcore-lib-cash'),
   eth: Bitcore,
-  xrp: Bitcore
+  xrp: Bitcore,
+      city: require('bitcore-lib-city'),
+      exos: require('bitcore-lib-exos'),
+      ruta: require('bitcore-lib-ruta'),
+      xlr: require('bitcore-lib-xlr'),
+      strat: require('bitcore-lib-strat'),
+      x42: require('bitcore-lib-x42'),
+      xds: require('bitcore-lib-xds')
 };
 
 const Common = require('./common');

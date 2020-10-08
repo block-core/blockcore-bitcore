@@ -1,5 +1,75 @@
 export let UNITS = {
-  btc: {
+    city: {
+         toSatoshis: 100000000,
+         full: {
+           maxDecimals: 8,
+           minDecimals: 8
+         },
+         short: {
+           maxDecimals: 6,
+           minDecimals: 2
+         }
+       },  exos: {
+         toSatoshis: 100000000,
+         full: {
+           maxDecimals: 8,
+           minDecimals: 8
+         },
+         short: {
+           maxDecimals: 6,
+           minDecimals: 2
+         }
+       },  ruta: {
+         toSatoshis: 100000000,
+         full: {
+           maxDecimals: 8,
+           minDecimals: 8
+         },
+         short: {
+           maxDecimals: 6,
+           minDecimals: 2
+         }
+       },  strat: {
+         toSatoshis: 100000000,
+         full: {
+           maxDecimals: 8,
+           minDecimals: 8
+         },
+         short: {
+           maxDecimals: 6,
+           minDecimals: 2
+         }
+       },  x42: {
+         toSatoshis: 100000000,
+         full: {
+           maxDecimals: 8,
+           minDecimals: 8
+         },
+         short: {
+           maxDecimals: 6,
+           minDecimals: 2
+         }
+       },  xds: {
+         toSatoshis: 100000000,
+         full: {
+           maxDecimals: 8,
+           minDecimals: 8
+         },
+         short: {
+           maxDecimals: 6,
+           minDecimals: 2
+         }
+       },  xlr: {
+         toSatoshis: 100000000,
+         full: {
+           maxDecimals: 8,
+           minDecimals: 8
+         },
+         short: {
+           maxDecimals: 6,
+           minDecimals: 2
+         }
+       },btc: {
     toSatoshis: 100000000,
     full: {
       maxDecimals: 8,

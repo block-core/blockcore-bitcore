@@ -15,7 +15,14 @@ const Bitcore_ = {
   btc: Bitcore,
   bch: BitcoreLibCash,
   eth: Bitcore,
-  xrp: Bitcore
+  xrp: Bitcore,
+  city: require('bitcore-lib-city'),
+  exos: require('bitcore-lib-exos'),
+  ruta: require('bitcore-lib-ruta'),
+  xlr: require('bitcore-lib-xlr'),
+  strat: require('bitcore-lib-strat'),
+  x42: require('bitcore-lib-x42'),
+  xds: require('bitcore-lib-xds'),
 };
 const PrivateKey = Bitcore.PrivateKey;
 const PublicKey = Bitcore.PublicKey;
@@ -280,6 +287,10 @@ export class Utils {
         t.setVersion(2);
       } else {
         t.setVersion(1);
+      }
+
+      if (['city', 'exos', 'ruta', 'xlr', 'strat', 'x42', 'xds'].indexOf(coin) > -1) {
+        t.nTime = txp.createdOn; // TODO: Add PoSv4 handling.
       }
 
       $.checkState(_.includes(_.values(Constants.SCRIPT_TYPES), txp.addressType));

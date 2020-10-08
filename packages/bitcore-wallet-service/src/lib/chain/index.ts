@@ -4,6 +4,13 @@ import { BchChain } from './bch';
 import { BtcChain } from './btc';
 import { EthChain } from './eth';
 import { XrpChain } from './xrp';
+      import { CityChain } from './city';
+      import { ExosChain } from './exos';
+      import { RutaChain } from './ruta';
+      import { XlrChain } from './xlr';
+      import { StratChain } from './strat';
+      import { X42Chain } from './x42';
+      import { XdsChain } from './xds';
 
 const Common = require('../common');
 const Constants = Common.Constants;
@@ -60,7 +67,14 @@ const chain: { [chain: string]: IChain } = {
   BTC: new BtcChain(),
   BCH: new BchChain(),
   ETH: new EthChain(),
-  XRP: new XrpChain()
+    XRP: new XrpChain(),
+      CITY: new CityChain(),
+      EXOS: new ExosChain(),
+      RUTA: new RutaChain(),
+      XLR: new XlrChain(),
+      STRAT: new StratChain(),
+      X42: new X42Chain(),
+      XDS: new XdsChain()
 };
 
 class ChainProxy {

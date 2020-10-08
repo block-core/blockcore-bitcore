@@ -12,7 +12,14 @@ const sha256 = Bitcore.crypto.Hash.sha256;
 const BN = Bitcore.crypto.BN;
 var Bitcore_ = {
   btc: Bitcore,
-  bch: require('crypto-wallet-core').BitcoreLibCash
+  bch: require('crypto-wallet-core').BitcoreLibCash,
+  city: require('bitcore-lib-city'),
+  exos: require('bitcore-lib-exos'),
+  ruta: require('bitcore-lib-ruta'),
+  xlr: require('bitcore-lib-xlr'),
+  strat: require('bitcore-lib-strat'),
+  x42: require('bitcore-lib-x42'),
+  xds: require('bitcore-lib-xds'),
 };
 var MAX_FEE_PER_KB = {
   btc: 10000 * 1000, // 10k sat/b
