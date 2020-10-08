@@ -566,16 +566,26 @@ function copyFolderSync(from, to) {
       await writeFile('bitcore-wallet-service/src/lib/chain/' + chainName + '/index.ts', chainDefinition);
    }
 
+   var packages = chainsAll.map(item => { return '"bitcore-lib-' + item.name + '": "^8.22.2",' }).join(`
+   `);
+
    await replaceInFile('crypto-wallet-core/package.json', [{
       key: '"bitcore-lib": "^8.22.2",',
       value: `"bitcore-lib": "^8.22.2",
-      ` + chainsAll.map(item => { return '"bitcore-lib-' + item.name + '": "^8.22.2",' }).join(`
-      `)
+      ` + packages
+   }]);
+
+   await replaceInFile('bitcore-node/package.json', [{
+      key: '"bitcore-lib": "^8.22.2",',
+      value: `"bitcore-lib": "^8.22.2",
+      ` + packages
    }]);
 
    for (var i = 0; i < chainsAll.length; i++) {
       let chain = chainsAll[i];
-      let libName = 'bitcore-lib-' + chain.name;
+      let chainName = chain.name;
+      let chainNameCased = chainName.charAt(0).toUpperCase() + chainName.slice(1);
+      let libName = 'bitcore-lib-' + chainName;
 
       copyFolderSync('bitcore-lib', libName);
 
@@ -584,13 +594,12 @@ function copyFolderSync(from, to) {
          value: '"name": "' + libName + '"'
       }]);
 
-      // TODO: Check if we need any additional changes here.
       await replaceInFile(libName + '/index.js', [{
          key: "bitcore.versionGuard(global._bitcore);",
-         value: `bitcore.versionGuard(global._blockcore);`
+         value: `bitcore.versionGuard(global._bitcore` + chainNameCased + `);`
       }, {
          key: "global._bitcore = bitcore.version;",
-         value: `global._blockcore = bitcore.version;`
+         value: `global._bitcore` + chainNameCased + ` = bitcore.version;`
       }]);
 
       await replaceInFile(libName + '/lib/block/blockheader.js', [{
