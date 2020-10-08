@@ -569,10 +569,9 @@ function copyFolderSync(from, to) {
    await replaceInFile('crypto-wallet-core/package.json', [{
       key: '"bitcore-lib": "^8.22.2",',
       value: `"bitcore-lib": "^8.22.2",
-      ` + chainsAll.map(item => { return '"bitcore-lib-' + item.name + '": "^8.22.2",' })
+      ` + chainsAll.map(item => { return '"bitcore-lib-' + item.name + '": "^8.22.2",' }).join(`
+      `)
    }]);
-
-   var chains = [{ name: 'city' }];
 
    for (var i = 0; i < chainsAll.length; i++) {
       let chain = chainsAll[i];
