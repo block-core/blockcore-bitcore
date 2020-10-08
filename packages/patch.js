@@ -28,9 +28,18 @@ async function replaceInFile(filename, structures) {
       let key = structures[i].key;
       let val = structures[i].value;
       let skipvalidation = structures[i].skipvalidation;
+      let multiple = structures[i].multiple;
 
       if (skipvalidation || data.indexOf(val) == -1) {
-         data = data.replace(key, val);
+         if (multiple) {
+            while (data.indexOf(key) > -1) {
+               data = data.replace(key, val);
+            }
+         }
+         else {
+            data = data.replace(key, val);
+         }
+
          console.log('Patched: ' + key);
       }
       else {
@@ -118,12 +127,7 @@ function copyFolderSync(from, to) {
    }
 
    var exports = chainsAll.map(item => { return 'BitcoreLib' + item.name.charAt(0).toUpperCase() + item.name.slice(1) + ',' });
-   
-   // var imports = chainsAll.map(item => { return `import * as BitcoreLib` + item.name.charAt(0).toUpperCase() + item.name.slice(1) + ` from 'bitcore-lib-` + item.name + `';
-   // `});
-
-   // TODO: Replace the library name with chain libraries when all of them is generated.
-   var imports = chainsAll.map(item => { return `import * as BitcoreLib` + item.name.charAt(0).toUpperCase() + item.name.slice(1) + ` from 'bitcore-lib-city';
+   var imports = chainsAll.map(item => { return `import * as BitcoreLib` + item.name.charAt(0).toUpperCase() + item.name.slice(1) + ` from 'bitcore-lib-` + item.name + `';
    `});
 
    await replaceInFile('crypto-wallet-core/src/index.ts', [{
@@ -210,12 +214,12 @@ function copyFolderSync(from, to) {
       key: 'xrp: Bitcore',
       value: `xrp: Bitcore,
   city: require('bitcore-lib-city'),
-  exos: require('bitcore-lib-city'),
-  ruta: require('bitcore-lib-city'),
-  xlr: require('bitcore-lib-city'),
-  strat: require('bitcore-lib-city'),
-  x42: require('bitcore-lib-city'),
-  xds: require('bitcore-lib-city'),`
+  exos: require('bitcore-lib-exos'),
+  ruta: require('bitcore-lib-ruta'),
+  xlr: require('bitcore-lib-xlr'),
+  strat: require('bitcore-lib-strat'),
+  x42: require('bitcore-lib-x42'),
+  xds: require('bitcore-lib-xds'),`
    }, {
       key: "$.checkState(_.includes(_.values(Constants.SCRIPT_TYPES), txp.addressType));",
       value: `if (['city', 'exos', 'ruta', 'xlr', 'strat', 'x42', 'xds'].indexOf(coin) > -1) {
@@ -229,24 +233,24 @@ function copyFolderSync(from, to) {
       key: 'bch: BitcoreLibCash',
       value: `bch: BitcoreLibCash,
   city: require('bitcore-lib-city'),
-  exos: require('bitcore-lib-city'),
-  ruta: require('bitcore-lib-city'),
-  xlr: require('bitcore-lib-city'),
-  strat: require('bitcore-lib-city'),
-  x42: require('bitcore-lib-city'),
-  xds: require('bitcore-lib-city'),`
+  exos: require('bitcore-lib-exos'),
+  ruta: require('bitcore-lib-ruta'),
+  xlr: require('bitcore-lib-xlr'),
+  strat: require('bitcore-lib-strat'),
+  x42: require('bitcore-lib-x42'),
+  xds: require('bitcore-lib-xds'),`
    }]);
 
    await replaceInFile('bitcore-wallet-client/src/lib/payproV2.ts', [{
       key: "bch: require('crypto-wallet-core').BitcoreLibCash",
       value: `bch: require('crypto-wallet-core').BitcoreLibCash,
   city: require('bitcore-lib-city'),
-  exos: require('bitcore-lib-city'),
-  ruta: require('bitcore-lib-city'),
-  xlr: require('bitcore-lib-city'),
-  strat: require('bitcore-lib-city'),
-  x42: require('bitcore-lib-city'),
-  xds: require('bitcore-lib-city'),`
+  exos: require('bitcore-lib-exos'),
+  ruta: require('bitcore-lib-ruta'),
+  xlr: require('bitcore-lib-xlr'),
+  strat: require('bitcore-lib-strat'),
+  x42: require('bitcore-lib-x42'),
+  xds: require('bitcore-lib-xds'),`
    }]);
 
    // TODO: Add support for all blockcore chains!
@@ -342,24 +346,27 @@ function copyFolderSync(from, to) {
       await createFolder('bitcore-node/src/modules/' + chainName);
       await copyFile('bitcore-node/src/modules/bitcoin/index.ts', 'bitcore-node/src/modules/' + chainName + '/index.ts');
 
+      console.log('FIXING MODULE');
+
       await replaceInFile('bitcore-node/src/modules/' + chainName + '/index.ts', [{
+         key: "'./p2p'",
+         value: "'../bitcoin/p2p'"
+      }, {
+         key: "'./VerificationPeer'",
+         value: "'../bitcoin/VerificationPeer'"
+      }, {
          key: "'BTC'",
-         value: "'" + chainNameUpper + "'"
+         value: "'" + chainNameUpper + "'",
+         multiple: true
       }, {
          key: "new BTCStateProvider()",
          value: "new BTCStateProvider('" + chainNameUpper + "')"
       }, {
          key: "'bitcore-lib'",
-         value: "'bitcore-lib-'" + chainName + "'"
+         value: "'bitcore-lib-" + chainName + "'"
       }, {
          key: "BitcoinModule",
          value: chainNameCased + "Module"
-      }, {
-         key: './p2p',
-         value: '../bitcoin/p2p'
-      }, {
-         key: './VerificationPeer',
-         value: '../bitcoin/VerificationPeer'
       }]);
 
       let chainDerivation = `const BitcoreLib = require('bitcore-lib-` + chainName + `');
@@ -403,24 +410,24 @@ function copyFolderSync(from, to) {
       key: "xrp: Bitcore",
       value: `xrp: Bitcore,
       city: require('bitcore-lib-city'),
-      exos: require('bitcore-lib-city'),
-      ruta: require('bitcore-lib-city'),
-      xlr: require('bitcore-lib-city'),
-      strat: require('bitcore-lib-city'),
-      x42: require('bitcore-lib-city'),
-      xds: require('bitcore-lib-city')`
+      exos: require('bitcore-lib-exos'),
+      ruta: require('bitcore-lib-ruta'),
+      xlr: require('bitcore-lib-xlr'),
+      strat: require('bitcore-lib-strat'),
+      x42: require('bitcore-lib-x42'),
+      xds: require('bitcore-lib-xds')`
    }]);
 
    await replaceInFile('bitcore-wallet-service/src/lib/common/utils.ts', [{
       key: "bch: require('bitcore-lib-cash')",
       value: `bch: require('bitcore-lib-cash'),
       city: require('bitcore-lib-city'),
-      exos: require('bitcore-lib-city'),
-      ruta: require('bitcore-lib-city'),
-      xlr: require('bitcore-lib-city'),
-      strat: require('bitcore-lib-city'),
-      x42: require('bitcore-lib-city'),
-      xds: require('bitcore-lib-city')`
+      exos: require('bitcore-lib-exos'),
+      ruta: require('bitcore-lib-ruta'),
+      xlr: require('bitcore-lib-xlr'),
+      strat: require('bitcore-lib-strat'),
+      x42: require('bitcore-lib-x42'),
+      xds: require('bitcore-lib-xds')`
    }]);
 
    // TODO: Add support for additional chains, all wired to "city" right now.
@@ -428,12 +435,12 @@ function copyFolderSync(from, to) {
       key: "xrp: require('bitcore-lib')",
       value: `xrp: require('bitcore-lib'),
       city: require('bitcore-lib-city'),
-      exos: require('bitcore-lib-city'),
-      ruta: require('bitcore-lib-city'),
-      xlr: require('bitcore-lib-city'),
-      strat: require('bitcore-lib-city'),
-      x42: require('bitcore-lib-city'),
-      xds: require('bitcore-lib-city')`
+      exos: require('bitcore-lib-exos'),
+      ruta: require('bitcore-lib-ruta'),
+      xlr: require('bitcore-lib-xlr'),
+      strat: require('bitcore-lib-strat'),
+      x42: require('bitcore-lib-x42'),
+      xds: require('bitcore-lib-xds')`
    }]);
 
    await replaceInFile('bitcore-wallet-service/src/lib/chain/index.ts', [{
@@ -490,12 +497,12 @@ function copyFolderSync(from, to) {
       key: "xrp: Bitcore",
       value: `xrp: Bitcore,
       city: require('bitcore-lib-city'),
-      exos: require('bitcore-lib-city'),
-      ruta: require('bitcore-lib-city'),
-      xlr: require('bitcore-lib-city'),
-      strat: require('bitcore-lib-city'),
-      x42: require('bitcore-lib-city'),
-      xds: require('bitcore-lib-city')`
+      exos: require('bitcore-lib-exos'),
+      ruta: require('bitcore-lib-ruta'),
+      xlr: require('bitcore-lib-xlr'),
+      strat: require('bitcore-lib-strat'),
+      x42: require('bitcore-lib-x42'),
+      xds: require('bitcore-lib-xds')`
    }]);
 
    copyFolderSync('bitcore-wallet-service/src/lib/chain/btc', 'bitcore-wallet-service/src/lib/chain/blockcore');
@@ -528,21 +535,21 @@ function copyFolderSync(from, to) {
       let chainNameCased = chainName.charAt(0).toUpperCase() + chainName.slice(1);
       let chainNameUpper = chainName.toUpperCase();
 
-      await copyFile('bitcore-node/src/modules/bitcoin/index.ts', 'bitcore-node/src/modules/' + chainName + '/index.ts');
+      // await copyFile('bitcore-node/src/modules/bitcoin/index.ts', 'bitcore-node/src/modules/' + chainName + '/index.ts');
 
-      await replaceInFile('bitcore-node/src/modules/' + chainName + '/index.ts', [{
-         key: "'BTC'",
-         value: "'" + chainNameUpper + "'"
-      }, {
-         key: "new BTCStateProvider()",
-         value: "new BTCStateProvider('" + chainNameUpper + "')"
-      }, {
-         key: "'bitcore-lib'",
-         value: "'bitcore-lib-" + chainName + "'"
-      }, {
-         key: "BitcoinModule",
-         value: chainNameCased + "Module"
-      }]);
+      // await replaceInFile('bitcore-node/src/modules/' + chainName + '/index.ts', [{
+      //    key: "'BTC'",
+      //    value: "'" + chainNameUpper + "'"
+      // }, {
+      //    key: "new BTCStateProvider()",
+      //    value: "new BTCStateProvider('" + chainNameUpper + "')"
+      // }, {
+      //    key: "'bitcore-lib'",
+      //    value: "'bitcore-lib-" + chainName + "'"
+      // }, {
+      //    key: "BitcoinModule",
+      //    value: chainNameCased + "Module"
+      // }]);
 
       let chainDefinition = `import { BitcoreLib` + chainNameCased + ` } from 'crypto-wallet-core';
       import { IChain } from '..';
@@ -562,13 +569,13 @@ function copyFolderSync(from, to) {
    await replaceInFile('crypto-wallet-core/package.json', [{
       key: '"bitcore-lib": "^8.22.2",',
       value: `"bitcore-lib": "^8.22.2",
-      "bitcore-lib-city": "^8.22.2",`
+      ` + chainsAll.map(item => { return '"bitcore-lib-' + item.name + '": "^8.22.2",' })
    }]);
 
    var chains = [{ name: 'city' }];
 
-   for (var i = 0; i < chains.length; i++) {
-      let chain = chains[i];
+   for (var i = 0; i < chainsAll.length; i++) {
+      let chain = chainsAll[i];
       let libName = 'bitcore-lib-' + chain.name;
 
       copyFolderSync('bitcore-lib', libName);
@@ -581,7 +588,7 @@ function copyFolderSync(from, to) {
       // TODO: Check if we need any additional changes here.
       await replaceInFile(libName + '/index.js', [{
          key: "bitcore.versionGuard(global._bitcore);",
-         value: `blockcore.versionGuard(global._blockcore);`
+         value: `bitcore.versionGuard(global._blockcore);`
       }, {
          key: "global._bitcore = bitcore.version;",
          value: `global._blockcore = bitcore.version;`
