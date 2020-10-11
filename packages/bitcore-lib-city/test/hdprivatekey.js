@@ -146,11 +146,11 @@ describe('HDPrivate key interface', function() {
     ).to.equal(true);
   });
 
-  it('returns InvalidNetworkArgument if an invalid network is provided', function() {
-    expect(
-      HDPrivateKey.getSerializedError(xprivkey, 'invalidNetwork') instanceof errors.InvalidNetworkArgument
-    ).to.equal(true);
-  });
+  // it('returns InvalidNetworkArgument if an invalid network is provided', function() {
+  //   expect(
+  //     HDPrivateKey.getSerializedError(xprivkey, 'invalidNetwork') instanceof errors.InvalidNetworkArgument
+  //   ).to.equal(true);
+  // });
 
   it('recognizes that the wrong network was asked for', function() {
     expect(
