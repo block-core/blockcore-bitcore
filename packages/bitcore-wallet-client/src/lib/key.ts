@@ -1,7 +1,7 @@
 'use strict';
 
 var $ = require('preconditions').singleton();
-import { BitcoreLib, Deriver, Transactions } from 'crypto-wallet-core';
+import { BitcoreLib, Deriver, Transactions } from '@blockcore/crypto-wallet-core';
 import * as _ from 'lodash';
 import 'source-map-support/register';
 import { Constants, Utils } from './common';

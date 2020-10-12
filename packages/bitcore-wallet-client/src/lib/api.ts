@@ -1,6 +1,6 @@
 'use strict';
 
-import * as CWC from 'crypto-wallet-core';
+import * as CWC from '@blockcore/crypto-wallet-core';
 import { EventEmitter } from 'events';
 import _ from 'lodash';
 import sjcl from 'sjcl';

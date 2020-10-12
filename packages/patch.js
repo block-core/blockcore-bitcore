@@ -9,6 +9,11 @@
    The secondary script "patch-release.js", will replace the "crypto-wallet-core" package.json file. This should be
    done before releasing that script.
 
+   npm config set @blockcore:registry https://registry.npmjs.org/
+   npm config set @sondreb:registry https://registry.npmjs.org/
+
+   chromeheadless fix: https://justinribeiro.com/chronicle/2019/10/02/workaround-for-karma-and-chrome-headless-on-windows-subsystem-for-linux-ala-wsl/
+   export CHROME_BIN=/mnt/c/Program\ Files\ \(x86\)/Google/Chrome/Application/chrome.exe
 */
 
 var fs = require('fs').promises;
@@ -213,13 +218,13 @@ function copyFolderSync(from, to) {
    await replaceInFile('bitcore-wallet-client/src/lib/common/utils.ts', [{
       key: 'xrp: Bitcore',
       value: `xrp: Bitcore,
-  city: require('bitcore-lib-city'),
-  exos: require('bitcore-lib-exos'),
-  ruta: require('bitcore-lib-ruta'),
-  xlr: require('bitcore-lib-xlr'),
-  strat: require('bitcore-lib-strat'),
-  x42: require('bitcore-lib-x42'),
-  xds: require('bitcore-lib-xds'),`
+  city: require('@blockcore/bitcore-lib-city'),
+  exos: require('@blockcore/bitcore-lib-exos'),
+  ruta: require('@blockcore/bitcore-lib-ruta'),
+  xlr: require('@blockcore/bitcore-lib-xlr'),
+  strat: require('@blockcore/bitcore-lib-strat'),
+  x42: require('@blockcore/bitcore-lib-x42'),
+  xds: require('@blockcore/bitcore-lib-xds'),`
    }, {
       key: "$.checkState(_.includes(_.values(Constants.SCRIPT_TYPES), txp.addressType));",
       value: `if (['city', 'exos', 'ruta', 'xlr', 'strat', 'x42', 'xds'].indexOf(coin) > -1) {
@@ -232,25 +237,25 @@ function copyFolderSync(from, to) {
    await replaceInFile('bitcore-wallet-client/src/lib/paypro.ts', [{
       key: 'bch: BitcoreLibCash',
       value: `bch: BitcoreLibCash,
-  city: require('bitcore-lib-city'),
-  exos: require('bitcore-lib-exos'),
-  ruta: require('bitcore-lib-ruta'),
-  xlr: require('bitcore-lib-xlr'),
-  strat: require('bitcore-lib-strat'),
-  x42: require('bitcore-lib-x42'),
-  xds: require('bitcore-lib-xds'),`
+  city: require('@blockcore/bitcore-lib-city'),
+  exos: require('@blockcore/bitcore-lib-exos'),
+  ruta: require('@blockcore/bitcore-lib-ruta'),
+  xlr: require('@blockcore/bitcore-lib-xlr'),
+  strat: require('@blockcore/bitcore-lib-strat'),
+  x42: require('@blockcore/bitcore-lib-x42'),
+  xds: require('@blockcore/bitcore-lib-xds'),`
    }]);
 
    await replaceInFile('bitcore-wallet-client/src/lib/payproV2.ts', [{
       key: "bch: require('crypto-wallet-core').BitcoreLibCash",
-      value: `bch: require('crypto-wallet-core').BitcoreLibCash,
-  city: require('bitcore-lib-city'),
-  exos: require('bitcore-lib-exos'),
-  ruta: require('bitcore-lib-ruta'),
-  xlr: require('bitcore-lib-xlr'),
-  strat: require('bitcore-lib-strat'),
-  x42: require('bitcore-lib-x42'),
-  xds: require('bitcore-lib-xds'),`
+      value: `bch: require('@blockcore/crypto-wallet-core').BitcoreLibCash,
+  city: require('@blockcore/bitcore-lib-city'),
+  exos: require('@blockcore/bitcore-lib-exos'),
+  ruta: require('@blockcore/bitcore-lib-ruta'),
+  xlr: require('@blockcore/bitcore-lib-xlr'),
+  strat: require('@blockcore/bitcore-lib-strat'),
+  x42: require('@blockcore/bitcore-lib-x42'),
+  xds: require('@blockcore/bitcore-lib-xds'),`
    }]);
 
    // TODO: Add support for all blockcore chains!
@@ -409,38 +414,38 @@ function copyFolderSync(from, to) {
    await replaceInFile('bitcore-wallet-service/src/lib/server.ts', [{
       key: "xrp: Bitcore",
       value: `xrp: Bitcore,
-      city: require('bitcore-lib-city'),
-      exos: require('bitcore-lib-exos'),
-      ruta: require('bitcore-lib-ruta'),
-      xlr: require('bitcore-lib-xlr'),
-      strat: require('bitcore-lib-strat'),
-      x42: require('bitcore-lib-x42'),
-      xds: require('bitcore-lib-xds')`
+      city: require('@blockcore/bitcore-lib-city'),
+      exos: require('@blockcore/bitcore-lib-exos'),
+      ruta: require('@blockcore/bitcore-lib-ruta'),
+      xlr: require('@blockcore/bitcore-lib-xlr'),
+      strat: require('@blockcore/bitcore-lib-strat'),
+      x42: require('@blockcore/bitcore-lib-x42'),
+      xds: require('@blockcore/bitcore-lib-xds')`
    }]);
 
    await replaceInFile('bitcore-wallet-service/src/lib/common/utils.ts', [{
       key: "bch: require('bitcore-lib-cash')",
       value: `bch: require('bitcore-lib-cash'),
-      city: require('bitcore-lib-city'),
-      exos: require('bitcore-lib-exos'),
-      ruta: require('bitcore-lib-ruta'),
-      xlr: require('bitcore-lib-xlr'),
-      strat: require('bitcore-lib-strat'),
-      x42: require('bitcore-lib-x42'),
-      xds: require('bitcore-lib-xds')`
+      city: require('@blockcore/bitcore-lib-city'),
+      exos: require('@blockcore/bitcore-lib-exos'),
+      ruta: require('@blockcore/bitcore-lib-ruta'),
+      xlr: require('@blockcore/bitcore-lib-xlr'),
+      strat: require('@blockcore/bitcore-lib-strat'),
+      x42: require('@blockcore/bitcore-lib-x42'),
+      xds: require('@blockcore/bitcore-lib-xds')`
    }]);
 
    // TODO: Add support for additional chains, all wired to "city" right now.
    await replaceInFile('bitcore-wallet-service/src/lib/model/wallet.ts', [{
       key: "xrp: require('bitcore-lib')",
       value: `xrp: require('bitcore-lib'),
-      city: require('bitcore-lib-city'),
-      exos: require('bitcore-lib-exos'),
-      ruta: require('bitcore-lib-ruta'),
-      xlr: require('bitcore-lib-xlr'),
-      strat: require('bitcore-lib-strat'),
-      x42: require('bitcore-lib-x42'),
-      xds: require('bitcore-lib-xds')`
+      city: require('@blockcore/bitcore-lib-city'),
+      exos: require('@blockcore/bitcore-lib-exos'),
+      ruta: require('@blockcore/bitcore-lib-ruta'),
+      xlr: require('@blockcore/bitcore-lib-xlr'),
+      strat: require('@blockcore/bitcore-lib-strat'),
+      x42: require('@blockcore/bitcore-lib-x42'),
+      xds: require('@blockcore/bitcore-lib-xds')`
    }]);
 
    await replaceInFile('bitcore-wallet-service/src/lib/chain/index.ts', [{
@@ -496,13 +501,13 @@ function copyFolderSync(from, to) {
    await replaceInFile('bitcore-wallet-service/src/lib/blockchainexplorers/v8.ts', [{
       key: "xrp: Bitcore",
       value: `xrp: Bitcore,
-      city: require('bitcore-lib-city'),
-      exos: require('bitcore-lib-exos'),
-      ruta: require('bitcore-lib-ruta'),
-      xlr: require('bitcore-lib-xlr'),
-      strat: require('bitcore-lib-strat'),
-      x42: require('bitcore-lib-x42'),
-      xds: require('bitcore-lib-xds')`
+      city: require('@blockcore/bitcore-lib-city'),
+      exos: require('@blockcore/bitcore-lib-exos'),
+      ruta: require('@blockcore/bitcore-lib-ruta'),
+      xlr: require('@blockcore/bitcore-lib-xlr'),
+      strat: require('@blockcore/bitcore-lib-strat'),
+      x42: require('@blockcore/bitcore-lib-x42'),
+      xds: require('@blockcore/bitcore-lib-xds')`
    }]);
 
    copyFolderSync('bitcore-wallet-service/src/lib/chain/btc', 'bitcore-wallet-service/src/lib/chain/blockcore');

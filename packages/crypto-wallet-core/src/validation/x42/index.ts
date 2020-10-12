@@ -1,5 +1,5 @@
 import { IValidation } from '..';
-const Bitcore = require('bitcore-lib-x42');
+const Bitcore = require('@blockcore/bitcore-lib-city');
 
 export class X42Validation implements IValidation {
   validateAddress(network: string, address: string): boolean {

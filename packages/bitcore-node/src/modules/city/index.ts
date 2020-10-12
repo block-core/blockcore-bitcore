@@ -6,7 +6,7 @@ import { VerificationPeer } from '../bitcoin/VerificationPeer';
 export default class CityModule extends BaseModule {
   constructor(services: BaseModule['bitcoreServices']) {
     super(services);
-    services.Libs.register('CITY', 'bitcore-lib-city', 'bitcore-p2p');
+    services.Libs.register('CITY', '@blockcore/bitcore-lib-city', 'bitcore-p2p');
     services.P2P.register('CITY', BitcoinP2PWorker);
     services.CSP.registerService('CITY', new BTCStateProvider('CITY'));
     services.Verification.register('CITY', VerificationPeer);

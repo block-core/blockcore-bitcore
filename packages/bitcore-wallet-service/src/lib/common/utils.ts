@@ -1,4 +1,4 @@
-import * as CWC from 'crypto-wallet-core';
+import * as CWC from '@blockcore/crypto-wallet-core';
 import _ from 'lodash';
 
 const $ = require('preconditions').singleton();
@@ -9,13 +9,13 @@ const Bitcore = require('bitcore-lib');
 const Bitcore_ = {
   btc: Bitcore,
   bch: require('bitcore-lib-cash'),
-      city: require('bitcore-lib-city'),
-      exos: require('bitcore-lib-exos'),
-      ruta: require('bitcore-lib-ruta'),
-      xlr: require('bitcore-lib-xlr'),
-      strat: require('bitcore-lib-strat'),
-      x42: require('bitcore-lib-x42'),
-      xds: require('bitcore-lib-xds')
+  city: require('@blockcore/bitcore-lib-city'),
+  exos: require('@blockcore/bitcore-lib-city'),
+  ruta: require('@blockcore/bitcore-lib-city'),
+  xlr: require('@blockcore/bitcore-lib-city'),
+  strat: require('@blockcore/bitcore-lib-city'),
+  x42: require('@blockcore/bitcore-lib-city'),
+  xds: require('@blockcore/bitcore-lib-city')
 };
 
 export class Utils {

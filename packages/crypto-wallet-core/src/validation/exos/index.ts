@@ -1,5 +1,5 @@
 import { IValidation } from '..';
-const Bitcore = require('bitcore-lib-exos');
+const Bitcore = require('@blockcore/bitcore-lib-city');
 
 export class ExosValidation implements IValidation {
   validateAddress(network: string, address: string): boolean {

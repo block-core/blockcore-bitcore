@@ -1,5 +1,5 @@
 import * as Bcrypt from 'bcrypt';
-import { Deriver, Transactions } from 'crypto-wallet-core';
+import { Deriver, Transactions } from '@blockcore/crypto-wallet-core';
 import 'source-map-support/register';
 import { Client } from './client';
 import { Encryption } from './encryption';

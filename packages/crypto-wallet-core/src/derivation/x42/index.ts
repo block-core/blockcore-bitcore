@@ -1,4 +1,4 @@
-const BitcoreLib = require('bitcore-lib-x42');
+const BitcoreLib = require('@blockcore/bitcore-lib-city');
       import { AbstractBitcoreLibDeriver } from '../btc';
       export class X42Deriver extends AbstractBitcoreLibDeriver {
         bitcoreLib = BitcoreLib;

@@ -1,6 +1,6 @@
 import { BTCTxProvider } from '../btc';
 
       export class XdsTxProvider extends BTCTxProvider {
-        lib = require('bitcore-lib-xds');
+        lib = require('@blockcore/bitcore-lib-city');
       }
       
