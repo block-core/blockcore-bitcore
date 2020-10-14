@@ -17,8 +17,11 @@
 */
 
 var fs = require('fs').promises;
+const { readdirSync } = require('fs');
+const { dir } = require('console');
 var fs2 = require('fs');
 var path = require('path');
+const { RetrySeconds } = require('./bitcore-p2p/lib/pool');
 
 async function copyFile(source, destination) {
    // destination will be created or overwritten by default.
@@ -89,8 +92,45 @@ function copyFolderSync(from, to) {
 
 (async () => {
 
-   // var chainsAll = [{ name: 'city' }, { name: 'exos' }, { name: 'ruta' }, { name: 'strat' }, { name: 'x42' }, { name: 'xds' }, { name: 'xlr' }];
-   var chainsAll = [{ name: 'city' }];
+   // var chainsAll = [{ name: 'city', code: 1926 }, { name: 'exos' }, { name: 'ruta' }, { name: 'strat' }, { name: 'x42' }, { name: 'xds', code: 15118976 }, { name: 'xlr' }];
+   var chainsAll = [{ name: 'city', code: 1926 }];
+
+   // Process the chains to have ready-made variable names.
+   chainsAll.forEach(item => { 
+      item.nameCased = item.name.charAt(0).toUpperCase() + item.name.slice(1), 
+      item.nameUpper = item.name.toUpperCase(),
+      item.libName = 'bitcore-lib-' + item.name  });
+
+   var exports = chainsAll.map(item => { return 'BitcoreLib' + item.nameCased + ',' });
+
+   var imports = chainsAll.map(item => {
+      return `import * as BitcoreLib` + item.nameCased + ` from 'bitcore-lib-` + item.name + `';
+   `});
+
+   var chainsAsStrings = chainsAll.map(c => "'" + c.name + "'" );
+
+   console.log('Chains:', chainsAll);
+   console.log('Exports:', exports);
+   console.log('Imports: ', imports);
+
+   // THIS SECTION CAN BE USED TO PREFIX ALL PACKAGE NAMES WITH '@blockcore' AND THE REFERENCES.
+   // Unfortunately this will require replacing all imports everywhere, so this is not being done for the moment.
+
+   // // NodeJS is fun... :-(
+   // const srcPath = './';
+   // const names = fs2.readdirSync(srcPath).filter(file => fs2.statSync(path.join(srcPath, file)).isDirectory());
+   // const replacements = names.map(item => { return { key: '"' + item + '"', value: '"@blockcore/' + item + '"'  }  });
+
+   // for(let name of names)
+   // {
+   //    const jsonPath = path.join(srcPath, name, 'package.json');
+
+   //    await replaceInFile(jsonPath, [{
+   //       key: `"` + name + `"`,
+   //       value: `"@blockcore/` + name + `"`
+   //    }, ...replacements]);
+   // }
+
    var units = '';
    var defaults = '';
 
@@ -132,10 +172,6 @@ function copyFolderSync(from, to) {
       defaults += def;
    }
 
-   var exports = chainsAll.map(item => { return 'BitcoreLib' + item.name.charAt(0).toUpperCase() + item.name.slice(1) + ',' });
-   var imports = chainsAll.map(item => { return `import * as BitcoreLib` + item.name.charAt(0).toUpperCase() + item.name.slice(1) + ` from 'bitcore-lib-` + item.name + `';
-   `});
-
    await replaceInFile('crypto-wallet-core/src/index.ts', [{
       key: "import * as BitcoreLibCash from 'bitcore-lib-cash';",
       value: `import * as BitcoreLibCash from 'bitcore-lib-cash';
@@ -145,202 +181,146 @@ function copyFolderSync(from, to) {
       value: `BitcoreLibCash, ` + exports.join(' ')
    }]);
 
+   // TODO: These values should likely be added to the initial array configuration so we can have different for different chains.
+   const constantDefaults1 = chainsAll.map(c => { return c.name + ': 10000 * 1000, // 10k sat/b,' }).join(`
+   `);
+
+   const constantDefaults2 = chainsAll.map(c => { return c.name + ': 0,' }).join(`
+   `);
+
+   const constantDefaults3 = chainsAll.map(c => { return c.name + ': 0.01,' }).join(`
+   `);
+
    await replaceInFile('crypto-wallet-core/src/constants/units.ts', [{ key: 'btc: {', value: units + 'btc: {' }]);
    await replaceInFile('bitcore-wallet-service/src/lib/common/defaults.ts', [{ key: 'btc: [', value: defaults + 'btc: [' }, {
       key: 'xrp: 1000000000000,',
       value: `xrp: 1000000000000,
-      city: 10000 * 1000, // 10k sat/b, // TODO: Update these!
-      exos: 10000 * 1000, // 10k sat/b,
-      ruta: 10000 * 1000, // 10k sat/b,
-      xlr: 10000 * 1000, // 10k sat/b,
-      strat: 10000 * 1000, // 10k sat/b,
-      x42: 10000 * 1000, // 10k sat/b,
-      xds: 10000 * 1000, // 10k sat/b`
+      ` + constantDefaults1
    }, {
       key: 'xrp: 0,',
       value: `xrp: 0,
-      city: 0,
-      exos: 0,
-      ruta: 0,
-      xlr: 0,
-      strat: 0,
-      x42: 0,
-      xds: 0`
+      ` + constantDefaults2
    }, {
       key: 'xrp: 1 * 1e6 // 1 xrp',
       value: `xrp: 1 * 1e6, // 1 xrp
-      city: 0.01,
-      exos: 0.01,
-      ruta: 0.01,
-      xlr: 0.01,
-      strat: 0.05,
-      x42: 0,
-      xds: 0.01`
+      ` + constantDefaults3
    }]);
 
+   console.log(constantDefaults1);
+   console.log(constantDefaults2);
+   console.log(constantDefaults3);
 
-   await copyFile('bitcore-p2p-cash/lib/messages/commands/sendheaders.js', 'bitcore-p2p/lib/messages/commands/sendheaders.js');
-
-   await replaceInFile('bitcore-p2p/lib/messages/commands/sendheaders.js', [{ key: 'bitcore-lib-cash', value: 'bitcore-lib', skipvalidation: true }]);
+   // Copy the sendheaders commands.
+   await copyFile('sendheaders.js', 'bitcore-p2p/lib/messages/commands/sendheaders.js');
 
    await replaceInFile('bitcore-p2p/lib/messages/builder.js', [{
       key: "getaddr: 'GetAddr'", value: `getaddr: 'GetAddr',
       sendheaders: 'SendHeaders'` }]);
 
+   const apiImports = chainsAll.map(c => { return c.name + ': CWC.BitcoreLib' + c.nameCased + ',' }).join(`
+   `);
+
+   const apiNetworks1 = chainsAll.map(c => { return "['" + c.name + "', 'livenet']," }).join(`
+   `);
+
+   const apiNetworks2 = chainsAll.map(c => { return "['" + c.name + "', 'livenet', true]," }).join(`
+   `);
+
    await replaceInFile('bitcore-wallet-client/src/lib/api.ts', [{
       key: 'xrp: CWC.BitcoreLib',
       value: `xrp: CWC.BitcoreLib,
-     city: CWC.BitcoreLib,
-     exos: CWC.BitcoreLib,
-     ruta: CWC.BitcoreLib,
-     xlr: CWC.BitcoreLib,
-     strat: CWC.BitcoreLib,
-     x42: CWC.BitcoreLib,
-     xds: CWC.BitcoreLib,`
+     ` + apiImports
    }, {
       key: "['bch', 'livenet', true]",
       value: `['bch', 'livenet', true],
-           ['city', 'livenet'],
-           ['exos', 'livenet'],
-           ['ruta', 'livenet'],
-           ['xlr', 'livenet'],
-           ['strat', 'livenet'],
-           ['x42', 'livenet'],
-           ['xds', 'livenet'],
-           ['city', 'livenet', true],
-           ['exos', 'livenet', true],
-           ['ruta', 'livenet', true],
-           ['xlr', 'livenet', true],
-           ['strat', 'livenet', true],
-           ['x42', 'livenet', true],
-           ['xds', 'livenet', true],`
+           ` + apiNetworks1 + `
+           ` + apiNetworks2
    }]);
+
+   const utilsImports = chainsAll.map(c => { return c.name + `: require('` + c.libName + `'),` }).join(`
+   `);
 
    await replaceInFile('bitcore-wallet-client/src/lib/common/utils.ts', [{
       key: 'xrp: Bitcore',
       value: `xrp: Bitcore,
-  city: require('@blockcore/bitcore-lib-city'),
-  exos: require('@blockcore/bitcore-lib-exos'),
-  ruta: require('@blockcore/bitcore-lib-ruta'),
-  xlr: require('@blockcore/bitcore-lib-xlr'),
-  strat: require('@blockcore/bitcore-lib-strat'),
-  x42: require('@blockcore/bitcore-lib-x42'),
-  xds: require('@blockcore/bitcore-lib-xds'),`
+  ` + utilsImports
    }, {
       key: "$.checkState(_.includes(_.values(Constants.SCRIPT_TYPES), txp.addressType));",
-      value: `if (['city', 'exos', 'ruta', 'xlr', 'strat', 'x42', 'xds'].indexOf(coin) > -1) {
+      value: `if ([` + chainsAsStrings + `].indexOf(coin) > -1) {
         t.nTime = txp.createdOn; // TODO: Add PoSv4 handling.
       }
 
       $.checkState(_.includes(_.values(Constants.SCRIPT_TYPES), txp.addressType));`
    }]);
 
+   const payproimports = chainsAll.map(c => { return c.name + `: require('` + c.libName + `'),` }).join(`
+   `);
+
    await replaceInFile('bitcore-wallet-client/src/lib/paypro.ts', [{
       key: 'bch: BitcoreLibCash',
       value: `bch: BitcoreLibCash,
-  city: require('@blockcore/bitcore-lib-city'),
-  exos: require('@blockcore/bitcore-lib-exos'),
-  ruta: require('@blockcore/bitcore-lib-ruta'),
-  xlr: require('@blockcore/bitcore-lib-xlr'),
-  strat: require('@blockcore/bitcore-lib-strat'),
-  x42: require('@blockcore/bitcore-lib-x42'),
-  xds: require('@blockcore/bitcore-lib-xds'),`
+  ` + payproimports
    }]);
 
    await replaceInFile('bitcore-wallet-client/src/lib/payproV2.ts', [{
       key: "bch: require('crypto-wallet-core').BitcoreLibCash",
-      value: `bch: require('@blockcore/crypto-wallet-core').BitcoreLibCash,
-  city: require('@blockcore/bitcore-lib-city'),
-  exos: require('@blockcore/bitcore-lib-exos'),
-  ruta: require('@blockcore/bitcore-lib-ruta'),
-  xlr: require('@blockcore/bitcore-lib-xlr'),
-  strat: require('@blockcore/bitcore-lib-strat'),
-  x42: require('@blockcore/bitcore-lib-x42'),
-  xds: require('@blockcore/bitcore-lib-xds'),`
+      value: `bch: require('crypto-wallet-core').BitcoreLibCash,
+  ` + payproimports
    }]);
+
+   const keyImports = chainsAll.map(c => { return `} else if (opts.coin == '` + c.name + `') {
+      coinCode = '` + c.code + `';` }).join(`
+   `);
 
    // TODO: Add support for all blockcore chains!
    await replaceInFile('bitcore-wallet-client/src/lib/key.ts', [{
       key: "coinCode = '144';",
       value: `coinCode = '144';
-       } else if (opts.coin == 'city') {
-         coinCode = '1926';
-       } else if (opts.coin == 'xds') {
-         coinCode = '15118976';`
+       ` + keyImports
    }]);
 
    await replaceInFile('bitcore-wallet-client/src/lib/common/constants.ts', [{
       key: "COINS: ['btc', 'bch', 'eth', 'xrp', 'usdc', 'pax', 'gusd', 'busd']",
-      value: `COINS: ['btc', 'bch', 'eth', 'xrp', 'usdc', 'pax', 'gusd', 'busd', 'city', 'exos', 'ruta', 'xlr', 'strat', 'x42', 'xds']`
+      value: `COINS: ['btc', 'bch', 'eth', 'xrp', 'usdc', 'pax', 'gusd', 'busd', ` + chainsAsStrings  + `]`
    }, {
       key: "UTXO_COINS: ['btc', 'bch']",
-      value: `UTXO_COINS: ['btc', 'bch', 'city', 'exos', 'ruta', 'xlr', 'strat', 'x42', 'xds']`
+      value: `UTXO_COINS: ['btc', 'bch', ` + chainsAsStrings + `]`
    }]);
 
    await replaceInFile('crypto-wallet-core/src/derivation/index.ts', [{
       key: "import { BtcDeriver } from './btc';",
       value: `import { BtcDeriver } from './btc';
-      import { CityDeriver } from './city';
-      import { ExosDeriver } from './exos';
-      import { RutaDeriver } from './ruta';
-      import { XlrDeriver } from './xlr';
-      import { StratDeriver } from './strat';
-      import { X42Deriver } from './x42';
-      import { XdsDeriver } from './xds';`
+      ` + chainsAll.map(c => { return `import { ` + c.nameCased + `Deriver } from './` + c.name + `';` }).join(`
+      `)
    }, {
       key: "XRP: new XrpDeriver()",
       value: `XRP: new XrpDeriver(),
-  CITY: new CityDeriver(),
-  EXOS: new ExosDeriver(),
-  RUTA: new RutaDeriver(),
-  XLR: new XlrDeriver(),
-  STRAT: new StratDeriver(),
-  X42: new X42Deriver(),
-  XDS: new XdsDeriver(),`
+  ` + chainsAll.map(c => { return c.nameUpper + `: new ` + c.nameCased + `Deriver(),` }).join(`
+  `)
    }]);
 
    await replaceInFile('crypto-wallet-core/src/transactions/index.ts', [{
       key: "import { BTCTxProvider } from './btc';",
       value: `import { BTCTxProvider } from './btc';
-      import { CityTxProvider } from './city';
-      import { ExosTxProvider } from './exos';
-      import { RutaTxProvider } from './ruta';
-      import { XlrTxProvider } from './xlr';
-      import { StratTxProvider } from './strat';
-      import { X42TxProvider } from './x42';
-      import { XdsTxProvider } from './xds';`
+      ` + chainsAll.map(c => { return `import { ` + c.nameCased + `TxProvider } from './` + c.name + `';` }).join(`
+      `)
    }, {
       key: "XRP: new XRPTxProvider()",
       value: `XRP: new XRPTxProvider(),
-  CITY: new CityTxProvider(),
-  EXOS: new ExosTxProvider(),
-  RUTA: new RutaTxProvider(),
-  XLR: new XlrTxProvider(),
-  STRAT: new StratTxProvider(),
-  X42: new X42TxProvider(),
-  XDS: new XdsTxProvider(),`
+  ` + chainsAll.map(c => { return c.nameUpper + `: new ` + c.nameCased + `TxProvider(),` }).join(`
+  `)
    }]);
 
    await replaceInFile('crypto-wallet-core/src/validation/index.ts', [{
       key: "import { BtcValidation } from './btc';",
       value: `import { BtcValidation } from './btc';
-      import { CityValidation } from './city';
-      import { ExosValidation } from './exos';
-      import { RutaValidation } from './ruta';
-      import { XlrValidation } from './xlr';
-      import { StratValidation } from './strat';
-      import { X42Validation } from './x42';
-      import { XdsValidation } from './xds';`
+      ` + chainsAll.map(c => { return `import { ` + c.nameCased + `Validation } from './` + c.name + `';` }).join(`
+      `)
    }, {
       key: "XRP: new XrpValidation()",
       value: `XRP: new XrpValidation(),
-  CITY: new CityValidation(),
-  EXOS: new ExosValidation(),
-  RUTA: new RutaValidation(),
-  XLR: new XlrValidation(),
-  STRAT: new StratValidation(),
-  X42: new X42Validation(),
-  XDS: new XdsValidation(),`
+  ` + chainsAll.map(c => { return c.nameUpper + `: new ` + c.nameCased + `Validation(),` }).join(`
+  `)
    }]);
 
    for (var i = 0; i < chainsAll.length; i++) {
@@ -409,78 +389,50 @@ function copyFolderSync(from, to) {
 
    }
 
+   var keyAndRequireImport = chainsAll.map(c => { return c.name + `: require('` + c.libName + `'),` }).join(`
+   `)
 
+   var localImports = chainsAll.map(c => { return `import { ` + c.nameCased + `Chain } from './` + c.name + `';` }).join(`
+   `)
 
    // TODO: Add support for additional chains, all wired to "city" right now.
    await replaceInFile('bitcore-wallet-service/src/lib/server.ts', [{
       key: "xrp: Bitcore",
       value: `xrp: Bitcore,
-      city: require('@blockcore/bitcore-lib-city'),
-      exos: require('@blockcore/bitcore-lib-exos'),
-      ruta: require('@blockcore/bitcore-lib-ruta'),
-      xlr: require('@blockcore/bitcore-lib-xlr'),
-      strat: require('@blockcore/bitcore-lib-strat'),
-      x42: require('@blockcore/bitcore-lib-x42'),
-      xds: require('@blockcore/bitcore-lib-xds')`
+      ` + keyAndRequireImport
    }]);
 
    await replaceInFile('bitcore-wallet-service/src/lib/common/utils.ts', [{
       key: "bch: require('bitcore-lib-cash')",
       value: `bch: require('bitcore-lib-cash'),
-      city: require('@blockcore/bitcore-lib-city'),
-      exos: require('@blockcore/bitcore-lib-exos'),
-      ruta: require('@blockcore/bitcore-lib-ruta'),
-      xlr: require('@blockcore/bitcore-lib-xlr'),
-      strat: require('@blockcore/bitcore-lib-strat'),
-      x42: require('@blockcore/bitcore-lib-x42'),
-      xds: require('@blockcore/bitcore-lib-xds')`
+      ` + keyAndRequireImport
    }]);
 
    // TODO: Add support for additional chains, all wired to "city" right now.
    await replaceInFile('bitcore-wallet-service/src/lib/model/wallet.ts', [{
       key: "xrp: require('bitcore-lib')",
       value: `xrp: require('bitcore-lib'),
-      city: require('@blockcore/bitcore-lib-city'),
-      exos: require('@blockcore/bitcore-lib-exos'),
-      ruta: require('@blockcore/bitcore-lib-ruta'),
-      xlr: require('@blockcore/bitcore-lib-xlr'),
-      strat: require('@blockcore/bitcore-lib-strat'),
-      x42: require('@blockcore/bitcore-lib-x42'),
-      xds: require('@blockcore/bitcore-lib-xds')`
+      ` + keyAndRequireImport
    }]);
 
    await replaceInFile('bitcore-wallet-service/src/lib/chain/index.ts', [{
       key: "XRP: new XrpChain()",
       value: `  XRP: new XrpChain(),
-      CITY: new CityChain(),
-      EXOS: new ExosChain(),
-      RUTA: new RutaChain(),
-      XLR: new XlrChain(),
-      STRAT: new StratChain(),
-      X42: new X42Chain(),
-      XDS: new XdsChain()`
+      ` + chainsAll.map(c => { return c.nameUpper + `: new ` + c.nameCased + `Chain(),` }).join(`
+      `)
    }, {
       key: "import { XrpChain } from './xrp';",
       value: `import { XrpChain } from './xrp';
-      import { CityChain } from './city';
-      import { ExosChain } from './exos';
-      import { RutaChain } from './ruta';
-      import { XlrChain } from './xlr';
-      import { StratChain } from './strat';
-      import { X42Chain } from './x42';
-      import { XdsChain } from './xds';`
+      ` + localImports
    }]);
+
+   var upperToLowerMapping = chainsAll.map(c => { return c.nameUpper + `: '` + c.name + `',` }).join(`
+   `)
 
    await replaceInFile('bitcore-wallet-service/src/lib/common/constants.ts', [{
       key: "BUSD: 'busd'", // Exists twice in file, but regular replace only replace first instance.
       value: `BUSD: 'busd',
-      CITY: 'city',
-      EXOS: 'exos',
-      RUTA: 'ruta',
-      XLR: 'xlr',
-      STRAT: 'strat',
-      X42: 'x42',
-      XDS: 'xds'`
+      ` + upperToLowerMapping
    }, {
       key: `  UTXO_COINS: {
     BTC: 'btc',
@@ -489,26 +441,14 @@ function copyFolderSync(from, to) {
       value: `  UTXO_COINS: {
     BTC: 'btc',
     BCH: 'bch',
-    CITY: 'city',
-    EXOS: 'exos',
-    RUTA: 'ruta',
-    XLR: 'xlr',
-    STRAT: 'strat',
-    X42: 'x42',
-    XDS: 'xds'
+    ` + upperToLowerMapping + `
   },`
    }]);
 
    await replaceInFile('bitcore-wallet-service/src/lib/blockchainexplorers/v8.ts', [{
       key: "xrp: Bitcore",
       value: `xrp: Bitcore,
-      city: require('@blockcore/bitcore-lib-city'),
-      exos: require('@blockcore/bitcore-lib-exos'),
-      ruta: require('@blockcore/bitcore-lib-ruta'),
-      xlr: require('@blockcore/bitcore-lib-xlr'),
-      strat: require('@blockcore/bitcore-lib-strat'),
-      x42: require('@blockcore/bitcore-lib-x42'),
-      xds: require('@blockcore/bitcore-lib-xds')`
+      ` + keyAndRequireImport
    }]);
 
    copyFolderSync('bitcore-wallet-service/src/lib/chain/btc', 'bitcore-wallet-service/src/lib/chain/blockcore');
@@ -575,28 +515,99 @@ function copyFolderSync(from, to) {
    var packages = chainsAll.map(item => { return '"bitcore-lib-' + item.name + '": "^8.22.2",' }).join(`
    `);
 
-   await replaceInFile('crypto-wallet-core/package.json', [{
-      key: '"bitcore-lib": "^8.22.2",',
-      value: `"bitcore-lib": "^8.22.2",
-      ` + packages
-   }, {
-      key: `"crypto-wallet-core"`,
-      value: `"@blockcore/crypto-wallet-core"`
-   }]);
 
-   await replaceInFile('bitcore-wallet-client/package.json', [{
-      key: `"bitcore-wallet-client"`,
-      value: `"@blockcore/bitcore-wallet-client"` // Replace name of package
-   }, {
-      key: `"crypto-wallet-core"`,
-      value: `"@blockcore/crypto-wallet-core"` // Replace name of dependencies
-   }]);
+   // await replaceInFile('bitcore-build/package.json', [{
+   //    key: `"bitcore-build"`,
+   //    value: `"@blockcore/bitcore-build"`
+   // }]);
+
+   // await replaceInFile('bitcore-client/package.json', [{
+   //    key: `"bitcore-client"`,
+   //    value: `"@blockcore/bitcore-client"`
+   // }, {
+   //    key: 'bitcore-mnemonic',
+   //    value: '@blockcore/bitcore-mnemonic'
+   // }, {
+   //    key: 'crypto-wallet-core',
+   //    value: '@blockcore/crypto-wallet-core'
+   // }]);
+
+   // await replaceInFile('bitcore-lib/package.json', [{
+   //    key: `"bitcore-lib"`,
+   //    value: `"@blockcore/bitcore-lib"`
+   // }, {
+   //    key: 'bitcore-build',
+   //    value: '@blockcore/bitcore-build'
+   // }]);
+
+   // await replaceInFile('bitcore-lib-cash/package.json', [{
+   //    key: `"bitcore-lib-cash"`,
+   //    value: `"@blockcore/bitcore-lib-cash"`
+   // }, {
+   //    key: 'bitcore-lib',
+   //    value: '@blockcore/bitcore-lib'
+   // }, {
+   //    key: 'bitcore-build',
+   //    value: '@blockcore/bitcore-build'
+   // }]);
+
+   // await replaceInFile('bitcore-lib-ltc/package.json', [{
+   //    key: `"bitcore-lib-ltc"`,
+   //    value: `"@blockcore/bitcore-lib-ltc"`
+   // }, {
+   //    key: 'bitcore-build',
+   //    value: '@blockcore/bitcore-build'
+   // }]);
+
+   // await replaceInFile('bitcore-mnemonic/package.json', [{
+   //    key: `"bitcore-mnemonic"`,
+   //    value: `"@blockcore/bitcore-mnemonic"`
+   // }, {
+   //    key: 'bitcore-build',
+   //    value: '@blockcore/bitcore-build'
+   // }, {
+   //    key: 'bitcore-lib',
+   //    value: '@blockcore/bitcore-lib',
+   //    multiple: true
+   // }]);
+
+   // await replaceInFile('bitcore-node/package.json', [{
+   //    key: `"bitcore-node"`,
+   //    value: `"@blockcore/bitcore-node"`
+   // }, {
+   //    key: 'bitcore-build',
+   //    value: '@blockcore/bitcore-build'
+   // }, {
+   //    key: 'bitcore-lib',
+   //    value: '@blockcore/bitcore-lib',
+   //    multiple: true
+   // }]);
+
+   // await replaceInFile('crypto-wallet-core/package.json', [{
+   //    key: '"bitcore-lib": "^8.22.2",',
+   //    value: `"bitcore-lib": "^8.22.2",
+   //    ` + packages
+   // }, {
+   //    key: `"crypto-wallet-core"`,
+   //    value: `"@blockcore/crypto-wallet-core"`
+   // }]);
+
+   // await replaceInFile('bitcore-wallet-client/package.json', [{
+   //    key: `"bitcore-wallet-client"`,
+   //    value: `"@blockcore/bitcore-wallet-client"` // Replace name of package
+   // }, {
+   //    key: `"crypto-wallet-core"`,
+   //    value: `"@blockcore/crypto-wallet-core"` // Replace name of dependencies
+   // }]);
 
    await replaceInFile('bitcore-node/package.json', [{
       key: '"bitcore-lib": "^8.22.2",',
       value: `"bitcore-lib": "^8.22.2",
       ` + packages
    }]);
+
+
+
 
    for (var i = 0; i < chainsAll.length; i++) {
       let chain = chainsAll[i];
