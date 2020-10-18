@@ -603,7 +603,11 @@ function copyFolderSync(from, to) {
       ` + packages
    }]);
 
-
+   await replaceInFile('bitcore-wallet-service/package.json', [{
+      key: '"bitcore-lib": "^8.22.2",',
+      value: `"bitcore-lib": "^8.22.2",
+      ` + packages
+   }]);
 
 
    for (var i = 0; i < chainsAll.length; i++) {
