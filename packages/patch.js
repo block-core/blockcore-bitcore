@@ -355,16 +355,6 @@ function copyFolderSync(from, to) {
          value: chainNameCased + "Module"
       }]);
 
-      await replaceInFile('bitcore-node/src/modules/' + chainName + '/lib/crypto/point.js', [{
-         key: "Point.prototype._getX = Point.prototype.getX;",
-         value: `if (!Point.prototype._getX)
-         Point.prototype._getX = Point.prototype.getX;`
-      }, {
-         key: "Point.prototype._getY = Point.prototype.getY;",
-         value: `if (!Point.prototype._getY)
-         Point.prototype._getY = Point.prototype.getY;`
-      }]);
-
       let chainDerivation = `const BitcoreLib = require('bitcore-lib-` + chainName + `');
       import { AbstractBitcoreLibDeriver } from '../btc';
       export class ` + chainNameCased + `Deriver extends AbstractBitcoreLibDeriver {
@@ -635,6 +625,16 @@ function copyFolderSync(from, to) {
       }, {
          key: "global._bitcore = bitcore.version;",
          value: `global._bitcore` + chainNameCased + ` = bitcore.version;`
+      }]);
+      
+      await replaceInFile(libName + '/lib/crypto/point.js', [{
+         key: "Point.prototype._getX = Point.prototype.getX;",
+         value: `if (!Point.prototype._getX)
+         Point.prototype._getX = Point.prototype.getX;`
+      }, {
+         key: "Point.prototype._getY = Point.prototype.getY;",
+         value: `if (!Point.prototype._getY)
+         Point.prototype._getY = Point.prototype.getY;`
       }]);
 
       await replaceInFile(libName + '/lib/block/blockheader.js', [{
