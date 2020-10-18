@@ -181,6 +181,13 @@ function copyFolderSync(from, to) {
       value: `BitcoreLibCash, ` + exports.join(' ')
    }]);
 
+   await replaceInFile('crypto-wallet-core/src/derivation/paths.ts', [{
+      key: "BTC: {",
+      value: chainsAll.map(c => { return c.nameUpper + `: { mainnet: "m/44'/` + c.code + `'/", livenet: "m/44'/` + c.code + `'/" }` }).join(`
+      `) + `,
+      BTC: {`
+   }]);
+
    // TODO: These values should likely be added to the initial array configuration so we can have different for different chains.
    const constantDefaults1 = chainsAll.map(c => { return c.name + ': 10000 * 1000, // 10k sat/b,' }).join(`
    `);
@@ -266,6 +273,39 @@ function copyFolderSync(from, to) {
       key: "bch: require('crypto-wallet-core').BitcoreLibCash",
       value: `bch: require('crypto-wallet-core').BitcoreLibCash,
   ` + payproimports
+   },{
+      key: "xrp: 1000000000000",
+      value: `xrp: 1000000000000,
+  ` + chainsAll.map(c => { return c.name + `: 10000 * 1000,` }).join(`
+  `)
+   }]);
+
+   await replaceInFile('bitcore-wallet-service/src/lib/emailservice.ts', [{
+      key: "xrp: 'XRP'",
+      value: `xrp: 'XRP',
+  ` + chainsAll.map(c => { return c.name + `: '` + c.nameUpper + `',` }).join(`
+  `)
+   }]);
+
+   await replaceInFile('bitcore-wallet-service/src/lib/pushnotificationsservice.ts', [{
+      key: "busd: 'BUSD'",
+      value: `busd: 'BUSD',
+  ` + chainsAll.map(c => { return c.name + `: '` + c.nameUpper + `',` }).join(`
+  `)
+   }]);
+   
+   await replaceInFile('bitcore-wallet-service/src/scripts/v8tool-list.ts', [{
+      key: "XRP: `https://api-xrp.bitcore.io/api/${coin}/${network}`",
+      value: `XRP: ` + "`https://api-xrp.bitcore.io/api/${coin}/${network}`" + `,
+  ` + chainsAll.map(c => { return c.nameUpper + `: ` + "`https://" + c.name + ".api.blockcore.net/api/${coin}/${network}`" + `,` }).join(`
+  `)
+   }]);
+
+   await replaceInFile('bitcore-wallet-service/src/scripts/v8tool.ts', [{
+      key: "XRP: `https://api-xrp.bitcore.io/api/${coin}/${network}`",
+      value: `XRP: ` + "`https://api-xrp.bitcore.io/api/${coin}/${network}`" + `,
+  ` + chainsAll.map(c => { return c.nameUpper + `: ` + "`https://" + c.name + ".api.blockcore.net/api/${coin}/${network}`" + `,` }).join(`
+  `)
    }]);
 
    const keyImports = chainsAll.map(c => { return `} else if (opts.coin == '` + c.name + `') {
@@ -469,10 +509,15 @@ function copyFolderSync(from, to) {
    }
 
    await replaceInFile('bitcore-wallet-service/src/lib/blockchainexplorer.ts', [{
-      key: `testnet: 'https://api-xrp.bitcore.io'
-   },`,
-      value: `testnet: 'https://api-xrp.bitcore.io'
-   },` + explorerUrls
+      key: `btc: {`,
+      value: explorerUrls + `btc: {`
+   }]);
+
+   await replaceInFile('bitcore-wallet-service/src/lib/blockchainmonitor.ts', [{
+      key: `xrp: {}`,
+      value:`xrp: {},
+      ` + chainsAll.map(c => { return c.name + `: {},` }).join(`
+      `)
    }]);
 
    for (var i = 0; i < chainsAll.length; i++) {
