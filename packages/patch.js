@@ -355,6 +355,16 @@ function copyFolderSync(from, to) {
          value: chainNameCased + "Module"
       }]);
 
+      await replaceInFile('bitcore-node/src/modules/' + chainName + '/lib/crypto/point.js', [{
+         key: "Point.prototype._getX = Point.prototype.getX;",
+         value: `if (!Point.prototype._getX)
+         Point.prototype._getX = Point.prototype.getX;`
+      }, {
+         key: "Point.prototype._getY = Point.prototype.getY;",
+         value: `if (!Point.prototype._getY)
+         Point.prototype._getY = Point.prototype.getY;`
+      }]);
+
       let chainDerivation = `const BitcoreLib = require('bitcore-lib-` + chainName + `');
       import { AbstractBitcoreLibDeriver } from '../btc';
       export class ` + chainNameCased + `Deriver extends AbstractBitcoreLibDeriver {
@@ -583,15 +593,6 @@ function copyFolderSync(from, to) {
    //    multiple: true
    // }]);
 
-   // await replaceInFile('crypto-wallet-core/package.json', [{
-   //    key: '"bitcore-lib": "^8.22.2",',
-   //    value: `"bitcore-lib": "^8.22.2",
-   //    ` + packages
-   // }, {
-   //    key: `"crypto-wallet-core"`,
-   //    value: `"@blockcore/crypto-wallet-core"`
-   // }]);
-
    // await replaceInFile('bitcore-wallet-client/package.json', [{
    //    key: `"bitcore-wallet-client"`,
    //    value: `"@blockcore/bitcore-wallet-client"` // Replace name of package
@@ -599,6 +600,12 @@ function copyFolderSync(from, to) {
    //    key: `"crypto-wallet-core"`,
    //    value: `"@blockcore/crypto-wallet-core"` // Replace name of dependencies
    // }]);
+
+   await replaceInFile('crypto-wallet-core/package.json', [{
+      key: '"bitcore-lib": "^8.22.2",',
+      value: `"bitcore-lib": "^8.22.2",
+      ` + packages
+   }]);
 
    await replaceInFile('bitcore-node/package.json', [{
       key: '"bitcore-lib": "^8.22.2",',
