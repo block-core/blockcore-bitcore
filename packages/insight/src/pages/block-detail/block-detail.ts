@@ -56,6 +56,7 @@ export class BlockDetailPage {
         let block;
         if (
           this.chainNetwork.chain === 'BTC' ||
+          this.chainNetwork.chain === 'CITY' ||
           this.chainNetwork.chain === 'BCH'
         ) {
           block = this.blocksProvider.toUtxoCoinAppBlock(response);

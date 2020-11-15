@@ -25,6 +25,13 @@ export class BitcoinP2PWorker extends BaseP2PWorker<IBtcBlock> {
   public isSyncing: boolean;
   constructor({ chain, network, chainConfig, blockModel = BitcoinBlockStorage }) {
     super({ chain, network, chainConfig, blockModel });
+
+    console.log('P2P:');
+    console.log(JSON.stringify(chain));
+    console.log(JSON.stringify(network));
+    console.log(JSON.stringify(chainConfig));
+    // console.log(JSON.stringify(blockModel));
+
     this.blockModel = blockModel;
     this.chain = chain;
     this.network = network;
@@ -44,6 +51,9 @@ export class BitcoinP2PWorker extends BaseP2PWorker<IBtcBlock> {
     });
     this.pool = new this.bitcoreP2p.Pool({
       addrs: this.chainConfig.trustedPeers.map(peer => {
+
+        console.log('POOL MAP!');
+
         return {
           ip: {
             v4: peer.host
@@ -140,6 +150,9 @@ export class BitcoinP2PWorker extends BaseP2PWorker<IBtcBlock> {
     });
 
     this.pool.on('peerheaders', (peer, message) => {
+
+      console.log('HEADERS YEEEH!!');
+
       logger.debug('peerheaders message received', {
         peer: `${peer.host}:${peer.port}`,
         chain: this.chain,
@@ -167,15 +180,30 @@ export class BitcoinP2PWorker extends BaseP2PWorker<IBtcBlock> {
   }
 
   async connect() {
+
+    console.log('SETUP LISTENERS!');
+
     this.setupListeners();
+
+    console.log('CONNECT!');
+
     this.pool.connect();
     this.connectInterval = setInterval(this.pool.connect.bind(this.pool), 5000);
     return new Promise<void>(resolve => {
-      this.pool.once('peerready', () => resolve());
+
+      console.log('PEER READY!');
+
+      this.pool.once('peerready', () => {
+        console.log('PEER REALLY READY!!');
+        resolve();
+      } );
     });
   }
 
   async disconnect() {
+
+    console.log('DISCONNECT, OH NO!');
+
     this.pool.removeAllListeners();
     this.pool.disconnect();
     if (this.connectInterval) {
@@ -184,24 +212,43 @@ export class BitcoinP2PWorker extends BaseP2PWorker<IBtcBlock> {
   }
 
   public async getHeaders(candidateHashes: string[]): Promise<BitcoinHeaderObj[]> {
+
+    console.log('GET HEADERS!');
+
     let received = false;
     return new Promise<BitcoinHeaderObj[]>(async resolve => {
+
+      console.log('HEADERS!');
+
       this.events.once('headers', headers => {
+
+        console.log('HEADERS RECEIVED!');
+
         received = true;
         resolve(headers);
       });
       while (!received) {
-        this.pool.sendMessage(this.messages.GetHeaders({ starts: candidateHashes }));
+
+        var msg = this.messages.GetHeaders({ starts: candidateHashes });
+
+        console.log(JSON.stringify(msg));
+
+        this.pool.sendMessage(msg);
+
         await wait(1000);
       }
     });
   }
 
   public async getBlock(hash: string) {
-    logger.debug('Getting block, hash:', hash);
+    logger.debug('GET BLOCK WITH HASH:', hash);
     let received = false;
     return new Promise<BitcoinBlockType>(async resolve => {
+
       this.events.once(hash, (block: BitcoinBlockType) => {
+        console.log('BLOCK RECEIVED SUCCESS!');
+        console.log(JSON.stringify(block));
+        
         logger.debug('Received block, hash:', hash);
         received = true;
         resolve(block);
@@ -224,6 +271,11 @@ export class BitcoinP2PWorker extends BaseP2PWorker<IBtcBlock> {
   }
 
   async processBlock(block: BitcoinBlockType): Promise<any> {
+
+    console.log('PROCESS BLOCK!!!');
+    console.log(block);
+    console.log(JSON.stringify(block));
+
     await this.blockModel.addBlock({
       chain: this.chain,
       network: this.network,
@@ -235,6 +287,9 @@ export class BitcoinP2PWorker extends BaseP2PWorker<IBtcBlock> {
   }
 
   async processTransaction(tx: BitcoinTransaction): Promise<any> {
+
+    console.log('PROCESS TRANSACTION!!!');
+
     const now = new Date();
     await TransactionStorage.batchImport({
       chain: this.chain,
@@ -253,7 +308,11 @@ export class BitcoinP2PWorker extends BaseP2PWorker<IBtcBlock> {
   }
 
   async sync() {
+
+    console.log('SYNC!');
+
     if (this.isSyncing) {
+      console.log('ALREADY SYNCING!');
       return false;
     }
     this.isSyncing = true;
@@ -263,6 +322,9 @@ export class BitcoinP2PWorker extends BaseP2PWorker<IBtcBlock> {
     this.initialSyncComplete =
       state && state.initialSyncComplete && state.initialSyncComplete.includes(`${chain}:${network}`);
     let tip = await ChainStateProvider.getLocalTip({ chain, network });
+
+    console.log('TIP', tip);
+
     if (parentChain && (!tip || tip.height < forkHeight)) {
       let parentTip = await ChainStateProvider.getLocalTip({ chain: parentChain, network });
       while (!parentTip || parentTip.height < forkHeight) {
@@ -284,11 +346,18 @@ export class BitcoinP2PWorker extends BaseP2PWorker<IBtcBlock> {
       const startingHeight = currentHeight;
       const startingTime = Date.now();
       let lastLog = startingTime;
+      
       logger.info(`${timestamp()} | Syncing ${headers.length} blocks | Chain: ${chain} | Network: ${network}`);
+      
       for (const header of headers) {
         try {
+
+          console.log('GETTING BLOCK!!' + header.hash);
+
           const block = await this.getBlock(header.hash);
+
           await this.processBlock(block);
+
           currentHeight++;
           const now = Date.now();
           const oneSecond = 1000;
@@ -333,6 +402,9 @@ export class BitcoinP2PWorker extends BaseP2PWorker<IBtcBlock> {
   async start() {
     logger.debug(`Started worker for chain ${this.chain}`);
     await this.connect();
+
+    console.log('CONNECT FINISHED, SYNC!!');
+
     this.refreshSyncingNode();
   }
 }

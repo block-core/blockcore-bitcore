@@ -15,7 +15,8 @@ const Bitcore_ = {
   btc: Bitcore,
   bch: BitcoreLibCash,
   eth: Bitcore,
-  xrp: Bitcore
+  xrp: Bitcore,
+  city: require('bitcore-lib-city'),
 };
 const PrivateKey = Bitcore.PrivateKey;
 const PublicKey = Bitcore.PublicKey;
@@ -189,6 +190,9 @@ export class Utils {
         break;
     }
 
+    console.log('deriveAddress:');
+    console.log(bitcoreAddress);
+
     return {
       address: bitcoreAddress.toString(true),
       path,
@@ -280,6 +284,10 @@ export class Utils {
         t.setVersion(2);
       } else {
         t.setVersion(1);
+      }
+
+      if (['city'].indexOf(coin) > -1) {
+        t.nTime = txp.createdOn; // TODO: Add PoSv4 handling.
       }
 
       $.checkState(_.includes(_.values(Constants.SCRIPT_TYPES), txp.addressType));

@@ -10,7 +10,8 @@ module.exports = {
     USDC: 'usdc',
     PAX: 'pax',
     GUSD: 'gusd',
-    BUSD: 'busd'
+    BUSD: 'busd',
+      CITY: 'city',
   },
 
   ERC20: {

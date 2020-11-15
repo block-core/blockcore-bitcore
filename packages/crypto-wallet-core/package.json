@@ -28,6 +28,7 @@
   "license": "MIT",
   "dependencies": {
     "bitcore-lib": "^8.22.2",
+      "bitcore-lib-city": "^8.22.2",
     "bitcore-lib-cash": "^8.22.2",
     "ethers": "4.0.37",
     "ripple-binary-codec": "0.2.6",

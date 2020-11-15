@@ -92,6 +92,62 @@ function copyFolderSync(from, to) {
 
 (async () => {
 
+
+
+   // We must also patch the original bitcore-lib to support PoS blocks.
+   await replaceInFile('bitcore-lib/lib/block/blockheader.js', [{
+      key: "function _fromBufferReader(br)",
+      value: `function _fromBufferReader(br, extraByte = true)`
+   }, {
+      key: "function fromBufferReader(br)",
+      value: `function fromBufferReader(br, extraByte)`
+   }, {
+      key: `BlockHeader.fromBufferReader = function fromBufferReader(br) {
+var info = BlockHeader._fromBufferReader(br);`,
+      value: `BlockHeader.fromBufferReader = function fromBufferReader(br, extraByte) {
+var info = BlockHeader._fromBufferReader(br, extraByte);`
+   }, {
+      key: "info.nonce = br.readUInt32LE();",
+      value: `info.nonce = br.readUInt32LE();
+if(extraByte)
+{
+  info.txCount = br.read(1); // Blockcore adds two additional counter to the end of a header. 
+  info.txCount2 = br.read(1); // Blockcore adds two additional counter to the end of a header. 
+}`
+   }]);
+
+   // TODO: Check if this value should be FALSE or TRUE! Trying out "true" for now.
+   await replaceInFile('bitcore-lib/lib/block/block.js', [{
+      key: "info.header = BlockHeader.fromBufferReader(br);",
+      value: `info.header = BlockHeader.fromBufferReader(br, true);`
+   }]);
+
+   await replaceInFile('bitcore-lib/lib/transaction/transaction.js', [{
+      key: "writer.writeInt32LE(this.version);",
+      value: `writer.writeInt32LE(this.version);
+writer.writeUInt32LE(this.nTime);`
+   }, {
+      key: "this.version = reader.readInt32LE();",
+      value: `this.version = reader.readInt32LE();
+
+// Blockcore adds nTime to the transaction - TODO: This is not compatible with PoSv4.
+this.nTime = reader.readUInt32LE();`
+   }, {
+      key: "version: this.version,",
+      value: `version: this.version,
+ nTime: this.nTime,`
+   }, {
+      key: "this.version = transaction.version;",
+      value: `this.version = transaction.version;
+this.nTime = transaction.nTime;`
+   }]);
+
+
+
+   return;
+
+
+
    // var chainsAll = [{ name: 'city', code: 1926 }, { name: 'exos' }, { name: 'ruta' }, { name: 'strat' }, { name: 'x42' }, { name: 'xds', code: 15118976 }, { name: 'xlr' }];
    var chainsAll = [{ name: 'city', code: 1926 }];
 
@@ -702,14 +758,15 @@ function copyFolderSync(from, to) {
          value: `info.nonce = br.readUInt32LE();
   if(extraByte)
   {
-     info.txCount = br.read(1); // Blockcore adds an additional counter to the end of a header. 
+     info.txCount = br.read(1); // Blockcore adds two additional counter to the end of a header. 
+     info.txCount2 = br.read(1); // Blockcore adds two additional counter to the end of a header. 
   }`
       }]);
 
-      // TODO: Check if this value should be FALSE or TRUE! Trying out "true" for now.
+      // This should be false, since the BlockHeader is reused for Header and Block reading.
       await replaceInFile(libName + '/lib/block/block.js', [{
          key: "info.header = BlockHeader.fromBufferReader(br);",
-         value: `info.header = BlockHeader.fromBufferReader(br, true);`
+         value: `info.header = BlockHeader.fromBufferReader(br, false);`
       }]);
 
       await replaceInFile(libName + '/lib/transaction/transaction.js', [{

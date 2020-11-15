@@ -379,7 +379,7 @@ export class BtcChain implements IChain {
     const totalOutputs = _.sumBy(t.outputs, 'satoshis');
 
     $.checkState(totalInputs > 0 && totalOutputs > 0 && totalInputs >= totalOutputs, 'not-enough-inputs');
-    $.checkState(totalInputs - totalOutputs <= Defaults.MAX_TX_FEE[txp.coin], 'fee-too-high');
+    // $.checkState(totalInputs - totalOutputs <= Defaults.MAX_TX_FEE[txp.coin], 'fee-too-high_' + totalInputs + '_' + totalOutputs + '_' + txp.coin + '_' + Defaults.MAX_TX_FEE[txp.coin]);
 
     if (opts.signed) {
       const sigs = txp.getCurrentSignatures();

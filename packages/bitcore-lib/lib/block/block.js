@@ -53,6 +53,10 @@ Block._from = function _from(arg) {
  * @private
  */
 Block._fromObject = function _fromObject(data) {
+
+  console.log('BLOCK FROM OBJECT!!!');
+  console.log(JSON.stringify(data));
+
   var transactions = [];
   data.transactions.forEach(function(tx) {
     if (tx instanceof Transaction) {
@@ -82,15 +86,33 @@ Block.fromObject = function fromObject(obj) {
  * @returns {Object} - An object representing the block data
  * @private
  */
-Block._fromBufferReader = function _fromBufferReader(br) {
+Block._fromBufferReader = function _fromBufferReader(br, extraByte) {
+
+  console.log('BTC!! NO!!! BLOCK FROM BUFFER');
+
   var info = {};
   $.checkState(!br.finished(), 'No block data received');
-  info.header = BlockHeader.fromBufferReader(br);
+  info.header = BlockHeader.fromBufferReader(br, false);
+
+  console.log(JSON.stringify(info));
+
+  console.log('Block._fromBufferReader:');
+
   var transactions = br.readVarintNum();
+
+  console.log('transactions: ' + transactions);
+
   info.transactions = [];
+
   for (var i = 0; i < transactions; i++) {
+
+    console.log('Processing ' + i + ' Transaction in Block...');
     info.transactions.push(Transaction().fromBufferReader(br));
+
   }
+
+  console.log(JSON.stringify(info));
+
   return info;
 };
 

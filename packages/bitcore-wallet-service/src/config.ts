@@ -21,7 +21,7 @@ module.exports = {
 
   storageOpts: {
     mongoDb: {
-      uri: 'mongodb://localhost:27017/bws',
+      uri: 'mongodb://192.168.1.41:27017/bws',
       dbname: 'bws'
     }
   },
@@ -65,7 +65,23 @@ module.exports = {
         url: 'https://api-xrp.bitcore.io'
       }
     },
-    socketApiKey: 'socketApiKey'
+    city: {
+      livenet: {
+        url: 'http://localhost:3000'
+      },
+      testnet: {
+        url: 'http://localhost:3000'
+      }
+    },
+    // city: {
+    //   livenet: {
+    //     url: 'https://city.api.blockcore.net'
+    //   },
+    //   testnet: {
+    //     url: 'https://city.api.blockcore.net'
+    //   }
+    // },
+    socketApiKey: ''
   },
   pushNotificationsOpts: {
     templatePath: 'templates',

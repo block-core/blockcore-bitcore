@@ -1,5 +1,15 @@
 export let UNITS = {
-  btc: {
+    city: {
+         toSatoshis: 100000000,
+         full: {
+           maxDecimals: 8,
+           minDecimals: 8
+         },
+         short: {
+           maxDecimals: 6,
+           minDecimals: 2
+         }
+       },btc: {
     toSatoshis: 100000000,
     full: {
       maxDecimals: 8,

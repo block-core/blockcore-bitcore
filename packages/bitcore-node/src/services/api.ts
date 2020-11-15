@@ -55,6 +55,9 @@ export class ApiService {
   }
 
   async stop() {
+
+    console.log('STOP!!');
+
     this.stopped = true;
     await this.socketService.stop();
     return new Promise(resolve => {

@@ -37,7 +37,11 @@ Message.prototype.toBuffer = Message.prototype.serialize = function() {
   bw.write(checksum);
   bw.write(payload);
 
-  return bw.concat();
+  var msg = bw.concat();
+
+  console.log('MSG:', msg);
+
+  return msg;
 };
 
 module.exports = Message;

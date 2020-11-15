@@ -3,6 +3,10 @@ class LibProvider {
     BTC: {
       lib: require('bitcore-lib'),
       p2p: require('bitcore-p2p')
+    },
+    CITY: {
+      lib: require('bitcore-lib-city'),
+      p2p: require('bitcore-p2p')
     }
   };
 

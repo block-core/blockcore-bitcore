@@ -308,6 +308,7 @@ Transaction.prototype.hasWitnesses = function() {
 
 Transaction.prototype.toBufferWriter = function(writer, noWitness) {
   writer.writeInt32LE(this.version);
+writer.writeUInt32LE(this.nTime);
 
   var hasWitnesses = this.hasWitnesses();
 
@@ -350,14 +351,27 @@ Transaction.prototype.fromBufferReader = function(reader) {
   $.checkArgument(!reader.finished(), 'No transaction data received');
 
   this.version = reader.readInt32LE();
+
+  // Blockcore adds nTime to the transaction - TODO: This is not compatible with PoSv4.
+  this.nTime = reader.readUInt32LE();
+
+  console.log('ADD nTIME TO TRANSACTION, BLOCKCORE FEATURE!');
+
   var sizeTxIns = reader.readVarintNum();
+
+  console.log('sizeTxIns: ' + sizeTxIns);
 
   // check for segwit
   var hasWitnesses = false;
   if (sizeTxIns === 0 && reader.buf[reader.pos] !== 0) {
     reader.pos += 1;
     hasWitnesses = true;
+
+    console.log('hasWitnesses set to true');
+
     sizeTxIns = reader.readVarintNum();
+
+    console.log('sizeTxIns (second time): ' + sizeTxIns);
   }
 
   for (var i = 0; i < sizeTxIns; i++) {
@@ -365,7 +379,12 @@ Transaction.prototype.fromBufferReader = function(reader) {
     this.inputs.push(input);
   }
 
+  console.log('inputs: ' + JSON.stringify(this.inputs));
+
   var sizeTxOuts = reader.readVarintNum();
+
+  console.log('sizeTxOuts: ' + sizeTxOuts);
+
   for (var j = 0; j < sizeTxOuts; j++) {
     this.outputs.push(Output.fromBufferReader(reader));
   }
@@ -383,7 +402,14 @@ Transaction.prototype.fromBufferReader = function(reader) {
     }
   }
 
+  console.log('Reading Lock Time...');
+
   this.nLockTime = reader.readUInt32LE();
+
+  console.log('this.nLockTime: ' + this.nLockTime);
+
+  // console.log(JSON.string(this));
+
   return this;
 };
 
@@ -400,6 +426,7 @@ Transaction.prototype.toObject = Transaction.prototype.toJSON = function toObjec
   var obj = {
     hash: this.hash,
     version: this.version,
+ nTime: this.nTime,
     inputs: inputs,
     outputs: outputs,
     nLockTime: this.nLockTime
@@ -460,6 +487,7 @@ Transaction.prototype.fromObject = function fromObject(arg, opts) {
   }
   this.nLockTime = transaction.nLockTime;
   this.version = transaction.version;
+this.nTime = transaction.nTime;
   this._checkConsistency(arg);
   return this;
 };

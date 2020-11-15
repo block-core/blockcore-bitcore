@@ -23,6 +23,7 @@ export const FullClusteredWorker = async () => {
   services.push(Storage, Event);
   if (cluster.isMaster) {
     services.push(P2P);
+
     if (args.DEBUG) {
       services.push(Api);
     } else {

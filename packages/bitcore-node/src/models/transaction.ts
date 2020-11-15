@@ -463,6 +463,11 @@ export class TransactionModel extends BaseTransaction<IBtcTransaction> {
     network: string;
     mintStream: Readable;
   }) {
+
+    console.log('TXS:');
+    console.log(JSON.stringify(params.txs));
+    console.log(JSON.stringify(params));
+
     let { chain, height, network, parentChain, forkHeight } = params;
     let parentChainCoinsMap = new Map();
     if (parentChain && forkHeight && height < forkHeight) {
@@ -494,12 +499,31 @@ export class TransactionModel extends BaseTransaction<IBtcTransaction> {
         }
         let address = '';
         if (output.script) {
+
+          console.log('SCRIPT:');
+          // console.log(output.script);
+          console.log(JSON.stringify(output.script));
+          
           address = output.script.toAddress(network).toString(true);
+          console.log('ADDRESS (BTC): ' + address);
+
+          // if (output.script.chunks[0])
+          // {
+          //   let hash = Libs.get(chain).lib.crypto.Hash.sha256ripemd160(output.script.chunks[0].buf);
+          //   address = Libs.get(chain)
+          //     .lib.Address(hash, network)
+          //     .toString(true);
+  
+          //   console.log('ADDRESS (CHAIN): ' + address);
+          // }
+
           if (address === 'false' && output.script.classify() === 'Pay to public key') {
             let hash = Libs.get(chain).lib.crypto.Hash.sha256ripemd160(output.script.chunks[0].buf);
             address = Libs.get(chain)
               .lib.Address(hash, network)
               .toString(true);
+
+              console.log('ADDRESS (SECOND PASS): ' + address);
           }
         }
         mintBatch.push({

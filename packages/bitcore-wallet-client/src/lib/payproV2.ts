@@ -12,13 +12,15 @@ const sha256 = Bitcore.crypto.Hash.sha256;
 const BN = Bitcore.crypto.BN;
 var Bitcore_ = {
   btc: Bitcore,
-  bch: require('crypto-wallet-core').BitcoreLibCash
+  bch: require('crypto-wallet-core').BitcoreLibCash,
+  city: require('bitcore-lib-city'),
 };
 var MAX_FEE_PER_KB = {
   btc: 10000 * 1000, // 10k sat/b
   bch: 10000 * 1000, // 10k sat/b
   eth: 1000000000000, // 1000 Gwei
-  xrp: 1000000000000
+  xrp: 1000000000000,
+  city: 10000 * 1000,
 };
 
 // PayPro Network Map

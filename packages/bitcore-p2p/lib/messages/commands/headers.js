@@ -32,21 +32,39 @@ function HeadersMessage(arg, options) {
 inherits(HeadersMessage, Message);
 
 HeadersMessage.prototype.setPayload = function(payload) {
+
+  console.log('HEADERS SET PAYLOAD!');
+  console.log(payload);
+
   $.checkArgument(payload && payload.length > 0, 'No data found to create Headers message');
   var parser = new BufferReader(payload);
   var count = parser.readVarintNum();
 
+  console.log('PAYLOAD COUNT: ' + count);
+
   this.headers = [];
   for (var i = 0; i < count; i++) {
+
     var header = this.BlockHeader.fromBufferReader(parser);
+
+    // console.log('Header (' + i + ') - ' + header.length + ': ' + header);
+    // console.log(JSON.stringify(header));
+
     this.headers.push(header);
-    var txn_count = parser.readUInt8();
-    $.checkState(txn_count === 0, 'txn_count should always be 0');
+
+    // var txn_count = parser.readUInt8();
+    // console.log('txn_count:' + txn_count);
+    // $.checkState(txn_count === 0, 'txn_count should always be 0');
+
   }
+
+  console.log('Check Finished...');
+
   utils.checkFinished(parser);
 };
 
 HeadersMessage.prototype.getPayload = function() {
+
   var bw = new BufferWriter();
   bw.writeVarintNum(this.headers.length);
   for (var i = 0; i < this.headers.length; i++) {

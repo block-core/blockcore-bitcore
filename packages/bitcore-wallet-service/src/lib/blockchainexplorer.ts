@@ -7,7 +7,10 @@ const Common = require('./common');
 const Defaults = Common.Defaults;
 const PROVIDERS = {
   v8: {
-    btc: {
+    city: {
+         livenet: 'http://localhost:3232',
+         testnet: 'http://localhost:3232'
+       },btc: {
       livenet: 'https://api.bitpay.com',
       testnet: 'https://api.bitpay.com'
     },

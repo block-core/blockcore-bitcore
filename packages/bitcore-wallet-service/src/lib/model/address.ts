@@ -122,6 +122,10 @@ export class Address {
           const [{ xPubKey }] = publicKeyRing;
           bitcoreAddress = Deriver.deriveAddress(coin.toUpperCase(), network, xPubKey, addressIndex, isChange);
         }
+
+        console.log('_deriveAddress!!!!');
+        console.log(bitcoreAddress);
+
         break;
     }
 

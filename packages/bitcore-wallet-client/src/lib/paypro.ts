@@ -8,7 +8,8 @@ var Bitcore = BitcoreLib;
 const Errors = require('./errors');
 var Bitcore_ = {
   btc: Bitcore,
-  bch: BitcoreLibCash
+  bch: BitcoreLibCash,
+  city: require('bitcore-lib-city'),
 };
 // const request = require('request');
 const JSON_PAYMENT_REQUEST_CONTENT_TYPE = 'application/payment-request';

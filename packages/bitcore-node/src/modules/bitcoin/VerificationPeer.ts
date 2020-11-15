@@ -51,6 +51,9 @@ export class VerificationPeer extends BitcoinP2PWorker implements IVerificationP
     });
 
     this.pool.on('peerblock', async (peer, message) => {
+
+      console.log('PEER BLOCK!');
+
       const { block } = message;
       const { hash } = block;
       logger.debug('peer block received', {
@@ -65,6 +68,9 @@ export class VerificationPeer extends BitcoinP2PWorker implements IVerificationP
     });
 
     this.pool.on('peerheaders', (peer, message) => {
+
+      console.log('PEER HEADERS!');
+
       logger.debug('peerheaders message received', {
         peer: `${peer.host}:${peer.port}`,
         chain: this.chain,
@@ -146,6 +152,12 @@ export class VerificationPeer extends BitcoinP2PWorker implements IVerificationP
   }
 
   async validateDataForBlock(blockNum: number, tipHeight: number, log = false) {
+
+
+    log = true;
+
+    console.log('VALIDATE DATA FOR BLOCK!: ' + blockNum);
+
     let success = true;
     const { chain, network } = this;
     const atTipOfChain = blockNum === tipHeight;

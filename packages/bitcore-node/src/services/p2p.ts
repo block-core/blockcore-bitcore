@@ -83,6 +83,7 @@ export class BaseP2PWorker<T extends IBlock = IBlock> {
     const pidMatches = pid === process.pid.toString();
     const timestampIsFresh = Date.now() - parseInt(timestamp) < 5 * 60 * 1000;
     const amSyncingNode = hostNameMatches && pidMatches && timestampIsFresh;
+
     return amSyncingNode;
   }
 

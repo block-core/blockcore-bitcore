@@ -206,7 +206,13 @@ export class CoinModel extends BaseModel<ICoin> {
     if (options && options.object) {
       return transform;
     }
-    return JSON.stringify(transform);
+
+    var res = JSON.stringify(transform);
+
+    console.log('COIN: API TRANSFORM!');
+    console.log(res);
+
+    return res;
   }
 }
 export let CoinStorage = new CoinModel();

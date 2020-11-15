@@ -47,7 +47,11 @@ PublicKeyHashInput.prototype.getScriptCode = function(publicKey) {
   } else {
     script = this.output.script;
   }
-  var scriptBuffer = Script.buildPublicKeyHashOut(script.toAddress()).toBuffer();
+
+  var address = script.toAddress();
+  console.log('ADDRESS (publickeyhash.js):' + address);
+
+  var scriptBuffer = Script.buildPublicKeyHashOut(address).toBuffer();
   writer.writeVarintNum(scriptBuffer.length);
   writer.write(scriptBuffer);
   return writer.toBuffer();
