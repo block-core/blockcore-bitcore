@@ -134,7 +134,7 @@ BlockHeader.fromString = function fromString(str) {
  * @returns {Object} - An object representing block header data
  * @private
  */
-BlockHeader._fromBufferReader = function _fromBufferReader(br) {
+BlockHeader._fromBufferReader = function _fromBufferReader(br, extraByte = true) {
   var info = {};
   info.version = br.readInt32LE();
   info.prevHash = br.read(32);
@@ -142,6 +142,12 @@ BlockHeader._fromBufferReader = function _fromBufferReader(br) {
   info.time = br.readUInt32LE();
   info.bits = br.readUInt32LE();
   info.nonce = br.readUInt32LE();
+
+  if (extraByte) {
+    info.txCount = br.read(1); // Blockcore adds two additional counter to the end of a header. 
+    info.txCount2 = br.read(1);
+  }
+
   return info;
 };
 
@@ -149,8 +155,8 @@ BlockHeader._fromBufferReader = function _fromBufferReader(br) {
  * @param {BufferReader} - A BufferReader of the block header
  * @returns {BlockHeader} - An instance of block header
  */
-BlockHeader.fromBufferReader = function fromBufferReader(br) {
-  var info = BlockHeader._fromBufferReader(br);
+BlockHeader.fromBufferReader = function fromBufferReader(br, extraByte) {
+  var info = BlockHeader._fromBufferReader(br, extraByte);
   return new BlockHeader(info);
 };
 

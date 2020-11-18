@@ -29,7 +29,7 @@ tmp.compressed = false;
 const pubKey = Bitcore.PrivateKey(tmp).toPublicKey();
 
 const BASE = {
-  BTC: `https://api.bitcore.io/api/${coin}/${network}`,
+  CITY: `https://api.bitcore.io/api/${coin}/${network}`,
   BCH: `https://api.bitcore.io/api/${coin}/${network}`,
   ETH: `https://api-eth.bitcore.io/api/${coin}/${network}`,
   XRP: `https://api-xrp.bitcore.io/api/${coin}/${network}`

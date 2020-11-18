@@ -18,7 +18,7 @@ var async = require('async');
 var events = require('events');
 var Bitcore = CWC.BitcoreLib;
 var Bitcore_ = {
-  btc: CWC.BitcoreLib,
+  city: CWC.BitcoreLib,
   bch: CWC.BitcoreLibCash,
   eth: CWC.BitcoreLib,
   xrp: CWC.BitcoreLib
@@ -405,7 +405,7 @@ export class API extends EventEmitter {
   getBalanceFromPrivateKey(privateKey, coin, cb) {
     if (_.isFunction(coin)) {
       cb = coin;
-      coin = 'btc';
+      coin = 'city';
     }
     var B = Bitcore_[coin];
 
@@ -426,7 +426,7 @@ export class API extends EventEmitter {
   buildTxFromPrivateKey(privateKey, destinationAddress, opts, cb) {
     opts = opts || {};
 
-    var coin = opts.coin || 'btc';
+    var coin = opts.coin || 'city';
     var signingMethod = opts.signingMethod || 'ecdsa';
 
     if (!_.includes(Constants.COINS, coin)) return cb(new Error('Invalid coin'));
@@ -572,7 +572,7 @@ export class API extends EventEmitter {
 
       var walletPrivKey = Bitcore.PrivateKey.fromString(secretSplit[1]);
       var networkChar = secretSplit[2];
-      var coin = secretSplit[3] || 'btc';
+      var coin = secretSplit[3] || 'city';
 
       return {
         walletId,
@@ -746,7 +746,7 @@ export class API extends EventEmitter {
     const chain = Utils.getChain(coin).toLowerCase();
 
     this.request.get(
-      '/v2/feelevels/?coin=' + (chain || 'btc') + '&network=' + (network || 'livenet'),
+      '/v2/feelevels/?coin=' + (chain || 'city') + '&network=' + (network || 'livenet'),
       (err, result) => {
         if (err) return cb(err);
         return cb(err, result);
@@ -794,7 +794,7 @@ export class API extends EventEmitter {
     if (opts) $.shouldBeObject(opts);
     opts = opts || {};
 
-    var coin = opts.coin || 'btc';
+    var coin = opts.coin || 'city';
     if (!_.includes(Constants.COINS, coin)) return cb(new Error('Invalid coin'));
 
     var network = opts.network || 'livenet';
@@ -876,7 +876,7 @@ export class API extends EventEmitter {
 
     opts = opts || {};
 
-    var coin = opts.coin || 'btc';
+    var coin = opts.coin || 'city';
     if (!_.includes(Constants.COINS, coin)) return cb(new Error('Invalid coin'));
 
     try {
@@ -1176,7 +1176,7 @@ export class API extends EventEmitter {
     PayPro.get(
       {
         url: opts.payProUrl,
-        coin: this.credentials.coin || 'btc',
+        coin: this.credentials.coin || 'city',
         network: this.credentials.network || 'livenet',
 
         // for testing
@@ -1387,6 +1387,7 @@ export class API extends EventEmitter {
         var fake = _.some(addresses, address => {
           return !Verifier.checkAddress(this.credentials, address);
         });
+
         if (fake) return cb(new Errors.SERVER_COMPROMISED());
       }
       return cb(null, addresses);
@@ -1464,6 +1465,7 @@ export class API extends EventEmitter {
             });
         },
         isLegit => {
+
           if (!isLegit) return cb(new Errors.SERVER_COMPROMISED());
 
           var result;
@@ -1496,7 +1498,7 @@ export class API extends EventEmitter {
     PayPro.get(
       {
         url: txp.payProUrl,
-        coin: txp.coin || 'btc',
+        coin: txp.coin || 'city',
         network: txp.network || 'livenet',
 
         // for testing
@@ -1744,7 +1746,7 @@ export class API extends EventEmitter {
   static signTxProposalFromAirGapped(key, txp, unencryptedPkr, m, n, opts, cb) {
     opts = opts || {};
 
-    var coin = opts.coin || 'btc';
+    var coin = opts.coin || 'city';
     if (!_.includes(Constants.COINS, coin)) return cb(new Error('Invalid coin'));
 
     var publicKeyRing = JSON.parse(unencryptedPkr);
@@ -1876,7 +1878,7 @@ export class API extends EventEmitter {
 
           let i = 0;
 
-          let isBtcSegwit = txp.coin == 'btc' && (txp.addressType == 'P2WSH' || txp.addressType == 'P2WPKH');
+          let isBtcSegwit = txp.coin == 'city' && (txp.addressType == 'P2WSH' || txp.addressType == 'P2WPKH');
           for (const unsigned of unserializedTxs) {
             let size = serializedTxs[i++].length / 2;
             if (isBtcSegwit) {
@@ -2397,7 +2399,7 @@ export class API extends EventEmitter {
     if (c.externalSource) {
       throw new Error('External Wallets are no longer supported');
     }
-    c.coin = c.coin || 'btc';
+    c.coin = c.coin || 'city';
     c.addressType = c.addressType || Constants.SCRIPT_TYPES.P2SH;
     c.account = c.account || 0;
     c.rootPath = c.getRootPath();
@@ -2494,6 +2496,7 @@ export class API extends EventEmitter {
 
     let copayerIdAlreadyTested = {};
     var checkCredentials = (key, opts, icb) => {
+
       let c = key.createCredentials(null, {
         coin: opts.coin,
         network: opts.network,
@@ -2511,6 +2514,7 @@ export class API extends EventEmitter {
       let client = clientOpts.clientFactory ? clientOpts.clientFactory() : new API(clientOpts);
 
       client.fromString(c);
+
       client.openWallet({}, (err, status) => {
         //        console.log(
         //          `PATH: ${c.rootPath} n: ${c.n}:`,
@@ -2586,13 +2590,13 @@ export class API extends EventEmitter {
     var checkKey = (key, cb) => {
       let opts = [
         // coin, network,  multisig
-        ['btc', 'livenet'],
+        ['city', 'livenet'],
         ['bch', 'livenet'],
         ['eth', 'livenet'],
         ['eth', 'testnet'],
         ['xrp', 'livenet'],
         ['xrp', 'testnet'],
-        ['btc', 'livenet', true],
+        ['city', 'livenet', true],
         ['bch', 'livenet', true]
       ];
       if (key.use44forMultisig) {
@@ -2619,7 +2623,7 @@ export class API extends EventEmitter {
       } else {
         //  leave only BTC, and no testnet
         opts = opts.filter(x => {
-          return x[0] == 'btc';
+          return x[0] == 'city';
         });
       }
 

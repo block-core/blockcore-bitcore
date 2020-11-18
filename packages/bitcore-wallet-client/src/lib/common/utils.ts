@@ -12,7 +12,7 @@ const Stringify = require('json-stable-stringify');
 
 const Bitcore = BitcoreLib;
 const Bitcore_ = {
-  btc: Bitcore,
+  city: Bitcore,
   bch: BitcoreLibCash,
   eth: Bitcore,
   xrp: Bitcore
@@ -157,7 +157,7 @@ export class Utils {
   static deriveAddress(scriptType, publicKeyRing, path, m, network, coin) {
     $.checkArgument(_.includes(_.values(Constants.SCRIPT_TYPES), scriptType));
 
-    coin = coin || 'btc';
+    coin = coin || 'city';
     const chain = this.getChain(coin).toLowerCase();
     var bitcore = Bitcore_[chain];
     var publicKeys = _.map(publicKeyRing, item => {
@@ -207,7 +207,7 @@ export class Utils {
     // now it is effective for all coins.
 
     const chain = this.getChain(coin).toLowerCase();
-    var str = chain == 'btc' ? xpub : chain + xpub;
+    var str = chain == 'city' ? xpub : chain + xpub;
 
     var hash = sjcl.hash.sha256.hash(str);
     return sjcl.codec.hex.fromBits(hash);
@@ -269,7 +269,7 @@ export class Utils {
   }
 
   static buildTx(txp) {
-    var coin = txp.coin || 'btc';
+    var coin = txp.coin || 'city';
 
     if (Constants.UTXO_COINS.includes(coin)) {
       var bitcore = Bitcore_[coin];
@@ -281,6 +281,8 @@ export class Utils {
       } else {
         t.setVersion(1);
       }
+
+      t.nTime = txp.createdOn; // PoS v3
 
       $.checkState(_.includes(_.values(Constants.SCRIPT_TYPES), txp.addressType));
 
@@ -370,6 +372,7 @@ export class Utils {
       const isETHMULTISIG = multisigContractAddress && !payProUrl;
       const chain = isETHMULTISIG ? 'ETHMULTISIG' : isERC20 ? 'ERC20' : this.getChain(coin);
       for (let index = 0; index < recipients.length; index++) {
+
         const rawTx = Transactions.create({
           ...txp,
           ...recipients[index],

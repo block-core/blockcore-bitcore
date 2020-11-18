@@ -6,7 +6,7 @@ import { Storage } from '../../src/services/storage';
 async function getAllAddressesFromBlocks(start, end) {
   if (!Storage.connected) await Storage.start({});
   const coins = await CoinStorage.collection
-    .find({ chain: 'BTC', network: 'mainnet', mintHeight: { $gte: start, $lte: end } })
+    .find({ chain: 'CITY', network: 'mainnet', mintHeight: { $gte: start, $lte: end } })
     .project({ address: 1 })
     .toArray();
   const uniqueAddresses = _.uniq(coins.map(c => c.address));
@@ -16,7 +16,7 @@ async function getAllAddressesFromBlocks(start, end) {
 export async function createWallet(addresses: string[], iteration, networkName?: string) {
   const walletName = 'Benchmark Wallet' + iteration;
   const password = 'iamsatoshi';
-  const chain = 'BTC';
+  const chain = 'CITY';
   const network = networkName || 'mainnet';
   const baseUrl = 'http://localhost:3000/api';
   let lockedWallet: Wallet;

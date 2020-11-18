@@ -187,8 +187,8 @@ export class Credentials {
         } else {
           coin = '0';
         }
-      } else if (this.coin == 'btc') {
-        coin = '0';
+      } else if (this.coin == 'city') {
+        coin = '1926';
       } else if (this.coin == 'eth') {
         coin = '60';
       } else if (this.coin == 'xrp') {
@@ -224,7 +224,7 @@ export class Credentials {
       throw new Error('External Wallets are no longer supported');
     }
 
-    x.coin = x.coin || 'btc';
+    x.coin = x.coin || 'city';
     x.addressType = x.addressType || Constants.SCRIPT_TYPES.P2SH;
     x.account = x.account || 0;
 
@@ -287,7 +287,7 @@ export class Credentials {
 
   isComplete() {
     if (!this.m || !this.n) return false;
-    if ((this.coin === 'btc' || this.coin === 'bch') && (!this.publicKeyRing || this.publicKeyRing.length != this.n))
+    if ((this.coin === 'city' || this.coin === 'bch') && (!this.publicKeyRing || this.publicKeyRing.length != this.n))
       return false;
     return true;
   }

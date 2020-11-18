@@ -38,7 +38,7 @@ export class Address {
   beRegistered: boolean;
 
   static Bitcore = {
-    btc: require('bitcore-lib'),
+    city: require('bitcore-lib'),
     bch: require('bitcore-lib-cash')
   };
 
@@ -90,7 +90,7 @@ export class Address {
     const publicKeys = _.map(publicKeyRing, item => {
       const xpub = Address.Bitcore[coin]
         ? new Address.Bitcore[coin].HDPublicKey(item.xPubKey)
-        : new Address.Bitcore.btc.HDPublicKey(item.xPubKey);
+        : new Address.Bitcore.city.HDPublicKey(item.xPubKey);
       return xpub.deriveChild(path).publicKey;
     });
 
@@ -110,7 +110,7 @@ export class Address {
         bitcoreAddress = Address.Bitcore[coin].Address.createMultisig(publicKeys, m, network);
         break;
       case Constants.SCRIPT_TYPES.P2WPKH:
-        bitcoreAddress = Address.Bitcore.btc.Address.fromPublicKey(publicKeys[0], network, 'witnesspubkeyhash');
+        bitcoreAddress = Address.Bitcore.city.Address.fromPublicKey(publicKeys[0], network, 'witnesspubkeyhash');
         break;
       case Constants.SCRIPT_TYPES.P2PKH:
         $.checkState(_.isArray(publicKeys) && publicKeys.length == 1);

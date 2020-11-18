@@ -10,7 +10,7 @@ const $ = require('preconditions').singleton();
 const Common = require('../common');
 const Bitcore = require('bitcore-lib');
 const Bitcore_ = {
-  btc: Bitcore,
+  city: Bitcore,
   bch: require('bitcore-lib-cash'),
   eth: Bitcore,
   xrp: Bitcore
@@ -22,7 +22,7 @@ const Constants = Common.Constants,
 
 function v8network(bwsNetwork) {
   if (bwsNetwork == 'livenet') return 'mainnet';
-  if (bwsNetwork == 'testnet' && config.blockchainExplorerOpts.btc.testnet.regtestEnabled) {
+  if (bwsNetwork == 'testnet' && config.blockchainExplorerOpts.city.testnet.regtestEnabled) {
     return 'regtest';
   }
   return bwsNetwork;

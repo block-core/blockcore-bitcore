@@ -1,7 +1,7 @@
 export const Paths = {
-  BTC: {
-    mainnet: "m/44'/0'/",
-    livenet: "m/44'/0'/"
+  CITY: {
+    mainnet: "m/44'/1926'/",
+    livenet: "m/44'/1926'/"
   },
   BCH: {
     mainnet: "m/44'/145'/",

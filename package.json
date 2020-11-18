@@ -12,10 +12,12 @@
     "insight": "cd ./packages/insight && npm start",
     "node": "cd packages/bitcore-node && npm start",
     "bws": "cd packages/bitcore-wallet-service && npm start",
+    "bws:stop": "cd packages/bitcore-wallet-service && npm stop",
+    "bws:mon": "cd packages/bitcore-wallet-service/ts_build && pm2 start app.js --log 'logs' --name 'bitcoin-wallet-service' && pm2 monit",
+    "bws:mon:stop": "cd packages/bitcore-wallet-service/ts_build && pm2 stop app.js --name 'bitcoin-wallet-service'",
     "compile": "./node_modules/.bin/lerna run compile",
     "lint": "lerna run lint",
     "fix": "lerna run fix",
-    "precommit": "lerna run --concurrency 1 --stream precommit --since master",
     "test:ci": "npm run test:ci:build && npm run test:ci:unit && npm run test:ci:integration",
     "test:ci:build": "docker-compose -f docker-compose.test.yml build",
     "test:ci:unit": "./ci.sh 'npm run lerna:ci:unit'",
@@ -72,10 +74,5 @@
   },
   "dependencies": {
     "lerna": "^3.22.1"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run precommit"
-    }
   }
 }

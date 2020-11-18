@@ -7,7 +7,7 @@ const crypto = bitcore.crypto;
 const secp256k1 = require('secp256k1');
 const Bitcore = require('bitcore-lib');
 const Bitcore_ = {
-  btc: Bitcore,
+  city: Bitcore,
   bch: require('bitcore-lib-cash')
 };
 
@@ -134,10 +134,10 @@ export class Utils {
 
   static formatAmountInBtc(amount) {
     return (
-      Utils.formatAmount(amount, 'btc', {
+      Utils.formatAmount(amount, 'city', {
         minDecimals: 8,
         maxDecimals: 8
-      }) + 'btc'
+      }) + 'city'
     );
   }
 
@@ -232,8 +232,8 @@ export class Utils {
 
   static getAddressCoin(address) {
     try {
-      new Bitcore_['btc'].Address(address);
-      return 'btc';
+      new Bitcore_['city'].Address(address);
+      return 'city';
     } catch (e) {
       try {
         new Bitcore_['bch'].Address(address);

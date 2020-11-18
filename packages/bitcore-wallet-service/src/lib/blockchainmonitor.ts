@@ -48,7 +48,7 @@ export class BlockchainMonitor {
       [
         done => {
           this.explorers = {
-            btc: {},
+            city: {},
             bch: {},
             eth: {},
             xrp: {}

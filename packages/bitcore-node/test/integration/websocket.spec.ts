@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import sinon from 'sinon';
 import io = require('socket.io-client');
 import config from '../../src/config';
-import { BitcoinP2PWorker } from '../../src/modules/bitcoin/p2p';
+import { BitcoinP2PWorker } from '../../src/modules/city/p2p';
 import { AsyncRPC } from '../../src/rpc';
 import { Api } from '../../src/services/api';
 import { Event } from '../../src/services/event';

@@ -57,7 +57,7 @@ export interface IChain {
 }
 
 const chain: { [chain: string]: IChain } = {
-  BTC: new BtcChain(),
+  CITY: new BtcChain(),
   BCH: new BchChain(),
   ETH: new EthChain(),
   XRP: new XrpChain()

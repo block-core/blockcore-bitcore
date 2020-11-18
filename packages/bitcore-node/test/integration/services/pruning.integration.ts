@@ -22,14 +22,14 @@ describe('Pruning Service', function() {
     process.env.DRYRUN = undefined;
   });
   const invalidTx = {
-    chain: 'BTC',
+    chain: 'CITY',
     network: 'mainnet',
     blockHeight: -3,
     txid: 'invalidCoin'
   } as MongoBound<IBtcTransaction>;
 
   const invalidCoin = {
-    chain: 'BTC',
+    chain: 'CITY',
     network: 'mainnet',
     mintTxid: 'invalidCoin',
     spentTxid: 'spentInMempool',
@@ -37,7 +37,7 @@ describe('Pruning Service', function() {
   } as ICoin;
 
   const mempoolCoin = {
-    chain: 'BTC',
+    chain: 'CITY',
     network: 'mainnet',
     mintHeight: -1,
     mintTxid: 'spentInMempool',
@@ -45,14 +45,14 @@ describe('Pruning Service', function() {
   } as ICoin;
 
   const mempoolCoin2 = {
-    chain: 'BTC',
+    chain: 'CITY',
     network: 'mainnet',
     mintHeight: -1,
     mintTxid: 'spentInMempoolAgain'
   } as ICoin;
 
   const oldMempoolTx = {
-    chain: 'BTC',
+    chain: 'CITY',
     network: 'mainnet',
     blockHeight: -1,
     txid: 'oldMempoolTx',
@@ -60,7 +60,7 @@ describe('Pruning Service', function() {
   } as MongoBound<IBtcTransaction>;
 
   const oldMempoolCoin = {
-    chain: 'BTC',
+    chain: 'CITY',
     network: 'mainnet',
     mintHeight: -1,
     mintTxid: 'oldMempoolTx',
@@ -68,7 +68,7 @@ describe('Pruning Service', function() {
   } as ICoin;
 
   const oldMempoolCoin2 = {
-    chain: 'BTC',
+    chain: 'CITY',
     network: 'mainnet',
     mintHeight: -1,
     mintTxid: 'oldMempoolTx2',

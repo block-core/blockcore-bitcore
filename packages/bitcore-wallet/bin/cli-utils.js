@@ -241,7 +241,7 @@ Utils.findOneTxProposal = function(txps, id) {
 };
 
 Utils.UNITS2 = {
-  'btc': 100000000,
+  'city': 100000000,
   'bit': 100,
   'sat': 1,
 };

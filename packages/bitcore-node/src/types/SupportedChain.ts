@@ -1,5 +1,5 @@
 export const SupportedChainSet = {
-  BTC: true,
+  CITY: true,
   BCH: true
 };
 

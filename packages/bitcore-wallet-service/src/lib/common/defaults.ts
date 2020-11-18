@@ -20,7 +20,7 @@ module.exports = {
   SCAN_ADDRESS_GAP: 30,
 
   FEE_LEVELS: {
-    btc: [
+    city: [
       {
         name: 'urgent',
         nbBlocks: 2,
@@ -170,7 +170,7 @@ module.exports = {
     // },
   },
 
-  COIN: 'btc',
+  COIN: 'city',
   INSIGHT_REQUEST_POOL_SIZE: 10,
   INSIGHT_TIMEOUT: 30000,
 
@@ -198,21 +198,21 @@ module.exports = {
   // MAX_TX_SIZE_IN_KB_XRP: 1000, // not used
 
   MAX_FEE_PER_KB: {
-    btc: 10000 * 1000, // 10k sat/b
+    city: 10000 * 1000, // 10k sat/b
     bch: 10000 * 1000, // 10k sat/b
     eth: 1000000000000, // 50 Gwei,
     xrp: 1000000000000
   },
 
   MIN_TX_FEE: {
-    btc: 0,
+    city: 0,
     bch: 0,
     eth: 0,
     xrp: 0
   },
 
   MAX_TX_FEE: {
-    btc: 0.05 * 1e8,
+    city: 0.05 * 1e8,
     bch: 0.05 * 1e8,
     eth: 1 * 1e18, // 1 eth
     xrp: 1 * 1e6 // 1 xrp

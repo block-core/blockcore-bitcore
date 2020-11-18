@@ -7,7 +7,7 @@ const superagent = require('superagent');
 var Bitcore = BitcoreLib;
 const Errors = require('./errors');
 var Bitcore_ = {
-  btc: Bitcore,
+  city: Bitcore,
   bch: BitcoreLibCash
 };
 // const request = require('request');
@@ -183,7 +183,7 @@ export class PayPro {
     $.checkArgument(opts && opts.url);
     opts.trustedKeys = opts.trustedKeys || dfltTrustedKeys;
 
-    var coin = opts.coin || 'btc';
+    var coin = opts.coin || 'city';
     var bitcore = Bitcore_[coin];
 
     var COIN = coin.toUpperCase();
@@ -251,7 +251,7 @@ export class PayPro {
       .checkArgument(opts.url)
       .checkArgument(opts.rawTx);
 
-    var coin = opts.coin || 'btc';
+    var coin = opts.coin || 'city';
     var COIN = coin.toUpperCase();
 
     opts.network = opts.network || 'livenet';

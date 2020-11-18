@@ -9,7 +9,7 @@ import { CoinStorage, ICoin } from '../../src/models/coin';
 import { TransactionStorage } from '../../src/models/transaction';
 import { IWallet, WalletStorage } from '../../src/models/wallet';
 import { WalletAddressStorage } from '../../src/models/walletAddress';
-import { BitcoinP2PWorker } from '../../src/modules/bitcoin/p2p';
+import { BitcoinP2PWorker } from '../../src/modules/city/p2p';
 import { AsyncRPC } from '../../src/rpc';
 import { Api } from '../../src/services/api';
 import { Event } from '../../src/services/event';

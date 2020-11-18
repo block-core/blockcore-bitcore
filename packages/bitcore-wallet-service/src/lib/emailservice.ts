@@ -99,7 +99,7 @@ export class EmailService {
     opts.emailOpts = opts.emailOpts || {};
 
     this.defaultLanguage = opts.emailOpts.defaultLanguage || 'en';
-    this.defaultUnit = opts.emailOpts.defaultUnit || 'btc';
+    this.defaultUnit = opts.emailOpts.defaultUnit || 'city';
     logger.info('Email templates at:' + (opts.emailOpts.templatePath || __dirname + '/../../templates') + '/');
     this.templatePath = path.normalize((opts.emailOpts.templatePath || __dirname + '/../../templates') + '/');
 
@@ -239,7 +239,7 @@ export class EmailService {
   _getDataForTemplate(notification, recipient, cb) {
     // TODO: Declare these in BWU
     const UNIT_LABELS = {
-      btc: 'BTC',
+      city: 'CITY',
       bit: 'bits',
       bch: 'BCH',
       eth: 'ETH',

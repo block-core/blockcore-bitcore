@@ -11,11 +11,11 @@ const _ = require('lodash');
 const sha256 = Bitcore.crypto.Hash.sha256;
 const BN = Bitcore.crypto.BN;
 var Bitcore_ = {
-  btc: Bitcore,
+  city: Bitcore,
   bch: require('crypto-wallet-core').BitcoreLibCash
 };
 var MAX_FEE_PER_KB = {
-  btc: 10000 * 1000, // 10k sat/b
+  city: 10000 * 1000, // 10k sat/b
   bch: 10000 * 1000, // 10k sat/b
   eth: 1000000000000, // 1000 Gwei
   xrp: 1000000000000

@@ -17,7 +17,7 @@ export interface IDeriver {
 }
 
 const derivers: { [chain: string]: IDeriver } = {
-  BTC: new BtcDeriver(),
+  CITY: new BtcDeriver(),
   BCH: new BchDeriver(),
   ETH: new EthDeriver(),
   XRP: new XrpDeriver()

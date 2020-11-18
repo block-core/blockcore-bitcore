@@ -6,7 +6,7 @@ import { ETHMULTISIGTxProvider } from './eth-multisig';
 import { XRPTxProvider } from './xrp';
 
 const providers = {
-  BTC: new BTCTxProvider(),
+  CITY: new BTCTxProvider(),
   BCH: new BCHTxProvider(),
   ETH: new ETHTxProvider(),
   ERC20: new ERC20TxProvider(),

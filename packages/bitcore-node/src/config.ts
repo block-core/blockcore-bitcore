@@ -62,7 +62,7 @@ const Config = function(): ConfigType {
     dbPass: process.env.DB_PASS || '',
     numWorkers: cpus().length,
     chains: {},
-    modules: ['./bitcoin', './bitcoin-cash', './ethereum'],
+    modules: ['./bitcoin'],
     services: {
       api: {
         rateLimiter: {
@@ -90,13 +90,13 @@ const Config = function(): ConfigType {
   config = _.mergeWith(config, foundConfig, mergeCopyArray);
   if (!Object.keys(config.chains).length) {
     Object.assign(config.chains, {
-      BTC: {
+      CITY: {
         mainnet: {
           chainSource: 'p2p',
-          trustedPeers: [{ host: '127.0.0.1', port: 8333 }],
+          trustedPeers: [{ host: '127.0.0.1', port: 4333 }],
           rpc: {
             host: '127.0.0.1',
-            port: 8332,
+            port: 4332,
             username: 'bitcoin',
             password: 'bitcoin'
           }

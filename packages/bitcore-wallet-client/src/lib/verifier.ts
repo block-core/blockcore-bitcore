@@ -33,6 +33,7 @@ export class Verifier {
       credentials.network,
       credentials.coin
     );
+
     return local.address == address.address && _.difference(local.publicKeys, address.publicKeys).length === 0;
   }
 
@@ -139,7 +140,7 @@ export class Verifier {
     $.checkState(credentials.isComplete());
 
     var creatorKeys = _.find(credentials.publicKeyRing, item => {
-      if (Utils.xPubToCopayerId(txp.coin || 'btc', item.xPubKey) === txp.creatorId) return true;
+      if (Utils.xPubToCopayerId(txp.coin || 'city', item.xPubKey) === txp.creatorId) return true;
     });
 
     if (!creatorKeys) return false;
@@ -189,7 +190,7 @@ export class Verifier {
 
     if (amount != _.sumBy(payproOpts.instructions, 'amount')) return false;
 
-    if (txp.coin == 'btc' && toAddress != payproOpts.instructions[0].toAddress) return false;
+    if (txp.coin == 'city' && toAddress != payproOpts.instructions[0].toAddress) return false;
 
     // Workaround for cashaddr/legacy address problems...
     if (

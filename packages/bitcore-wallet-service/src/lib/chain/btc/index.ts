@@ -299,6 +299,7 @@ export class BtcChain implements IChain {
   }
 
   getBitcoreTx(txp, opts = { signed: true }) {
+
     const t = new this.bitcoreLib.Transaction();
 
     // BTC tx version
@@ -310,6 +311,8 @@ export class BtcChain implements IChain {
       // set nLockTime (only txp.version>=4)
       if (txp.lockUntilBlockHeight) t.lockUntilBlockHeight(txp.lockUntilBlockHeight);
     }
+
+    t.nTime = txp.createdOn; // PoS v3
 
     /*
      * txp.inputs clean txp.input

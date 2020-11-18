@@ -38,7 +38,7 @@ const EmailValidator = require('email-validator');
 import { Validation } from 'crypto-wallet-core';
 const Bitcore = require('bitcore-lib');
 const Bitcore_ = {
-  btc: Bitcore,
+  city: Bitcore,
   bch: require('bitcore-lib-cash'),
   eth: Bitcore,
   xrp: Bitcore
@@ -1131,7 +1131,7 @@ export class WalletService {
       {
         name: 'unit',
         isValid(value) {
-          return _.isString(value) && _.includes(['btc', 'bit'], value.toLowerCase());
+          return _.isString(value) && _.includes(['city', 'bit'], value.toLowerCase());
         }
       },
       {

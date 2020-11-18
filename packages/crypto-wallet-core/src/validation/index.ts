@@ -9,7 +9,7 @@ export interface IValidation {
 }
 
 const validation: { [chain: string]: IValidation } = {
-  BTC: new BtcValidation(),
+  CITY: new BtcValidation(),
   BCH: new BchValidation(),
   ETH: new EthValidation(),
   XRP: new XrpValidation()

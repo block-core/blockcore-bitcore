@@ -1,7 +1,7 @@
 import { BaseModule } from '..';
 import { BCHStateProvider } from '../../providers/chain-state/bch/bch';
-import { BitcoinP2PWorker } from '../bitcoin/p2p';
-import { VerificationPeer } from '../bitcoin/VerificationPeer';
+import { BitcoinP2PWorker } from '../city/p2p';
+import { VerificationPeer } from '../city/VerificationPeer';
 
 export default class BCHModule extends BaseModule {
   constructor(services) {

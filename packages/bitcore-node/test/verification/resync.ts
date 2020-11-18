@@ -1,6 +1,6 @@
 import { Config } from '../../src/services/config';
 import { Storage } from '../../src/services/storage';
-import { VerificationPeer } from '../../src/modules/bitcoin/VerificationPeer';
+import { VerificationPeer } from '../../src/modules/city/VerificationPeer';
 
 (async () => {
   const { CHAIN: chain, NETWORK: network, START, END } = process.env;
