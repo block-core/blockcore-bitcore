@@ -1465,7 +1465,6 @@ export class API extends EventEmitter {
             });
         },
         isLegit => {
-
           if (!isLegit) return cb(new Errors.SERVER_COMPROMISED());
 
           var result;
@@ -2496,7 +2495,6 @@ export class API extends EventEmitter {
 
     let copayerIdAlreadyTested = {};
     var checkCredentials = (key, opts, icb) => {
-
       let c = key.createCredentials(null, {
         coin: opts.coin,
         network: opts.network,

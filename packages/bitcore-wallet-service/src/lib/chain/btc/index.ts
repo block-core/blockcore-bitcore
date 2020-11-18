@@ -299,7 +299,6 @@ export class BtcChain implements IChain {
   }
 
   getBitcoreTx(txp, opts = { signed: true }) {
-
     const t = new this.bitcoreLib.Transaction();
 
     // BTC tx version

@@ -4,9 +4,9 @@ import { ITransaction } from '../../models/baseTransaction';
 import { BitcoinBlockStorage } from '../../models/block';
 import { CoinStorage, ICoin } from '../../models/coin';
 import { TransactionStorage } from '../../models/transaction';
-import { BitcoinP2PWorker } from './p2p';
 import { ChainStateProvider } from '../../providers/chain-state';
 import { ErrorType, IVerificationPeer } from '../../services/verification';
+import { BitcoinP2PWorker } from './p2p';
 
 export class VerificationPeer extends BitcoinP2PWorker implements IVerificationPeer {
   prevBlockNum = 0;
