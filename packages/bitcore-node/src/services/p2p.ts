@@ -1,4 +1,4 @@
-import * as os from 'os';
+// import * as os from 'os';
 import logger from '../logger';
 import { BaseBlock, IBlock } from '../models/baseBlock';
 import { StateStorage } from '../models/state';
@@ -78,12 +78,15 @@ export class BaseP2PWorker<T extends IBlock = IBlock> {
     if (!this.lastHeartBeat) {
       return false;
     }
-    const [hostname, pid, timestamp] = this.lastHeartBeat.split(':');
-    const hostNameMatches = hostname === os.hostname();
-    const pidMatches = pid === process.pid.toString();
-    const timestampIsFresh = Date.now() - parseInt(timestamp) < 5 * 60 * 1000;
-    const amSyncingNode = hostNameMatches && pidMatches && timestampIsFresh;
-    return amSyncingNode;
+
+    // const [, pid] = this.lastHeartBeat.split(':');
+    // const hostNameMatches = true; // hostname === os.hostname(); // RUNNING ON DOCKER THIS WON'T RESOLVE TO TRUE. E.G UNDER DOCKER: 0b92f6e5e867, 20d9da7a9cc0
+    // const pidMatches = pid === process.pid.toString();
+    // const timestampIsFresh = true; // = Date.now() - parseInt(timestamp) < 5 * 60 * 1000; // SERVICE BELIEVES ANOTHER NODE IS RUNNING IF THIS IS NOT FRESH.
+    // const amSyncingNode = hostNameMatches && pidMatches && timestampIsFresh;
+
+    // return amSyncingNode;
+    return true;
   }
 
   async waitTilSync() {
@@ -100,20 +103,24 @@ export class BaseP2PWorker<T extends IBlock = IBlock> {
       const wasSyncingNode = this.getIsSyncingNode();
       this.lastHeartBeat = await StateStorage.getSyncingNode({ chain: this.chain, network: this.network });
       const nowSyncingNode = this.getIsSyncingNode();
+
       this.isSyncingNode = nowSyncingNode;
       if (wasSyncingNode && !nowSyncingNode) {
         throw new Error('Syncing Node Renewal Failure');
       }
+
       if (!wasSyncingNode && nowSyncingNode) {
         logger.info(`This worker is now the syncing node for ${this.chain} ${this.network}`);
         this.sync();
       }
+
       if (!this.lastHeartBeat || this.getIsSyncingNode()) {
         this.registerSyncingNode({ primary: true });
       } else {
         logger.info('Another node is the primary syncing node');
         this.registerSyncingNode({ primary: false });
       }
+
       await wait(500);
     }
   }

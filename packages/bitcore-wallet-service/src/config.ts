@@ -21,7 +21,7 @@ module.exports = {
 
   storageOpts: {
     mongoDb: {
-      uri: 'mongodb://192.168.1.41:27017/bws',
+      uri: 'mongodb://city-mongo:27017/bws',
       dbname: 'bws'
     }
   },
@@ -34,10 +34,10 @@ module.exports = {
   blockchainExplorerOpts: {
     city: {
       livenet: {
-        url: 'http://localhost:3000'
+        url: 'http://city.api.blockcore.net:3000'
       },
       testnet: {
-        url: 'http://localhost:3000',
+        url: 'http://city.api.blockcore.net:3000',
         regtestEnabled: false
       }
     },
