@@ -52,7 +52,7 @@ export class Wallet {
   constructor(params: Wallet | WalletObj) {
     Object.assign(this, params);
     if (!this.baseUrl) {
-      this.baseUrl = 'https://api.bitcore.io/api';
+      this.baseUrl = 'http://localhost:3000/api';
     }
     this.client = new Client({
       apiUrl: this.getApiUrl(),

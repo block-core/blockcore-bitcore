@@ -188,7 +188,8 @@ export class Credentials {
           coin = '0';
         }
       } else if (this.coin == 'btc') {
-        coin = '0';
+        // coin = '0';
+        coin = '1926';
       } else if (this.coin == 'eth') {
         coin = '60';
       } else if (this.coin == 'xrp') {

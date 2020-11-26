@@ -120,7 +120,8 @@ export class BitcoinBlock extends BaseBlock<IBtcBlock> {
       nonce: header.nonce,
       transactionCount: block.transactions.length,
       size: block.toBuffer().length,
-      reward: block.transactions[0].outputAmount,
+      // reward: block.transactions[0].outputAmount,
+      reward: block.transactions[0] ?  block.transactions[0].outputAmount : 0,
       processed: false
     };
     return {

@@ -85,7 +85,9 @@ Block.fromObject = function fromObject(obj) {
 Block._fromBufferReader = function _fromBufferReader(br) {
   var info = {};
   $.checkState(!br.finished(), 'No block data received');
-  info.header = BlockHeader.fromBufferReader(br);
+  // Important that extraByte is set to false for block parsing (received from getdata). extraByte is needed for headers.
+  info.header = BlockHeader.fromBufferReader(br, false);
+  // info.header = BlockHeader.fromBufferReader(br);
   var transactions = br.readVarintNum();
   info.transactions = [];
   for (var i = 0; i < transactions; i++) {

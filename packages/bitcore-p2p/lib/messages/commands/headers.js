@@ -40,8 +40,9 @@ HeadersMessage.prototype.setPayload = function(payload) {
   for (var i = 0; i < count; i++) {
     var header = this.BlockHeader.fromBufferReader(parser);
     this.headers.push(header);
-    var txn_count = parser.readUInt8();
-    $.checkState(txn_count === 0, 'txn_count should always be 0');
+    // TODO: Is this removal really needed?
+    // var txn_count = parser.readUInt8();
+    // $.checkState(txn_count === 0, 'txn_count should always be 0');
   }
   utils.checkFinished(parser);
 };

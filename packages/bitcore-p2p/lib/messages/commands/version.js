@@ -37,7 +37,8 @@ function VersionMessage(arg, options) {
   this.nonce = arg.nonce || utils.getNonce();
   this.services = arg.services || new BN(1, 10);
   this.timestamp = arg.timestamp || new Date();
-  this.subversion = arg.subversion || '/bitcore:' + packageInfo.version + '/';
+  // this.subversion = arg.subversion || '/bitcore:' + packageInfo.version + '/';
+  this.subversion = arg.subversion || '/Blockcore:0.0.1(' + this.version + ';' + this.services + ')/Bitcore:' + packageInfo.version + '/';
   this.startHeight = arg.startHeight || 0;
   this.relay = arg.relay === false ? false : true;
 }

@@ -311,6 +311,8 @@ export class BtcChain implements IChain {
       if (txp.lockUntilBlockHeight) t.lockUntilBlockHeight(txp.lockUntilBlockHeight);
     }
 
+    t.nTime = txp.createdOn; // PoS v3
+
     /*
      * txp.inputs clean txp.input
      * removes possible nSequence number (BIP68)

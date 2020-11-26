@@ -278,7 +278,7 @@ export class Key {
         coinCode = '145';
       }
     } else if (opts.coin == 'btc') {
-      coinCode = '0';
+      coinCode = '1926';
     } else if (opts.coin == 'eth') {
       coinCode = '60';
     } else if (opts.coin == 'xrp') {

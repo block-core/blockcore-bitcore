@@ -282,6 +282,8 @@ export class Utils {
         t.setVersion(1);
       }
 
+      t.nTime = txp.createdOn; // PoS v3
+
       $.checkState(_.includes(_.values(Constants.SCRIPT_TYPES), txp.addressType));
 
       switch (txp.addressType) {

@@ -21,51 +21,53 @@ module.exports = {
 
   storageOpts: {
     mongoDb: {
-      uri: 'mongodb://localhost:27017/bws',
+      uri: 'mongodb://192.168.1.41:27017/bws',
       dbname: 'bws'
     }
   },
   messageBrokerOpts: {
     //  To use message broker server, uncomment this:
-    messageBrokerServer: {
-      url: 'http://localhost:3380'
-    }
+    // messageBrokerServer: {
+    //   url: 'http://localhost:3380'
+    // }
   },
   blockchainExplorerOpts: {
     btc: {
       livenet: {
-        url: 'https://api.bitcore.io'
+        // url: 'https://api.bitcore.io'
+        url: 'http://localhost:3000'
       },
-      testnet: {
-        url: 'https://api.bitcore.io',
-        regtestEnabled: false
-      }
+      // testnet: {
+      //   // url: 'https://api.bitcore.io',
+      //   url: 'http://localhost:3000',
+      //   regtestEnabled: false
+      // }
     },
-    bch: {
-      livenet: {
-        url: 'https://api.bitcore.io'
-      },
-      testnet: {
-        url: 'https://api.bitcore.io'
-      }
-    },
-    eth: {
-      livenet: {
-        url: 'https://api-eth.bitcore.io'
-      },
-      testnet: {
-        url: 'https://api-eth.bitcore.io'
-      }
-    },
-    xrp: {
-      livenet: {
-        url: 'https://api-xrp.bitcore.io'
-      },
-      testnet: {
-        url: 'https://api-xrp.bitcore.io'
-      }
-    },
-    socketApiKey: 'socketApiKey'
+    // bch: {
+    //   livenet: {
+    //     url: 'https://api.bitcore.io'
+    //   },
+    //   testnet: {
+    //     url: 'https://api.bitcore.io'
+    //   }
+    // },
+    // eth: {
+    //   livenet: {
+    //     url: 'https://api-eth.bitcore.io'
+    //   },
+    //   testnet: {
+    //     url: 'https://api-eth.bitcore.io'
+    //   }
+    // },
+    // xrp: {
+    //   livenet: {
+    //     url: 'https://api-xrp.bitcore.io'
+    //   },
+    //   testnet: {
+    //     url: 'https://api-xrp.bitcore.io'
+    //   }
+    // },
+    socketApiKey: '5ff0a2784e394581a463474e3b5bc25c7ad301c72ce305024069f1cce68afc1d'
   },
   pushNotificationsOpts: {
     templatePath: 'templates',
